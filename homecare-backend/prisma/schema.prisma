@@ -1,0 +1,1099 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────
+
+enum VATCondition {
+  REGISTERED_TAXPAYER
+  MONOTAX
+  EXEMPT
+  NOT_REGISTERED
+  FINAL_CONSUMER
+}
+
+enum BiologicalSex {
+  MALE
+  FEMALE
+  INTERSEX
+}
+
+enum Specialty {
+  NURSING
+  PHYSIOTHERAPY
+  MEDICINE
+  NUTRITION
+  OCCUPATIONAL_THERAPY
+  SPEECH_THERAPY
+  PSYCHOLOGY
+  SOCIAL_WORK
+  CAREGIVER
+}
+
+enum ContractType {
+  EMPLOYEE
+  MONOTAX
+  INVOICE
+}
+
+enum InternmentType {
+  ACUTE
+  SUBACUTE
+  CHRONIC
+  COMPLEX_CHRONIC
+  PALLIATIVE_CARE
+}
+
+enum AdmissionMode {
+  HOSPITAL_DISCHARGE
+  FROM_HOME
+}
+
+enum InternmentStatus {
+  ACTIVE
+  SUSPENDED
+  DISCHARGED
+  CANCELLED
+}
+
+enum AuthorizationType {
+  INITIAL
+  RENEWAL
+  EXTENSION
+}
+
+enum AuthorizationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum VisitStatus {
+  SCHEDULED
+  COMPLETED
+  MISSED
+  RECOVERED
+  CANCELLED
+}
+
+enum Frequency {
+  DAILY
+  BIWEEKLY
+  TRIWEEKLY
+  WEEKLY
+  BIMONTHLY
+  MONTHLY
+  ON_DEMAND
+}
+
+enum DiagnosisType {
+  PRIMARY
+  SECONDARY
+}
+
+enum DiagnosisStatus {
+  ACTIVE
+  RESOLVED
+  IN_TREATMENT
+}
+
+enum AttachmentType {
+  LAB_RESULT
+  IMAGING
+  CONSENT
+  PRESCRIPTION
+  REFERRAL
+  OTHER
+}
+
+enum InsurerType {
+  NATIONAL_INSURANCE
+  PROVINCIAL_INSURANCE
+  PREPAID
+  PRIVATE
+}
+
+enum BillingMode {
+  PER_VISIT
+  DAILY_MODULE
+  MIXED
+}
+
+enum BudgetStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+}
+
+enum BatchStatus {
+  DRAFT
+  SUBMITTED
+  AUDITED
+  PAID
+  PARTIALLY_REJECTED
+  REJECTED
+}
+
+enum ItemStatus {
+  INCLUDED
+  REJECTED
+  PENDING_REVIEW
+}
+
+enum SettlementStatus {
+  OPEN
+  CLOSED
+  PAID
+}
+
+enum AccountMovement {
+  INVOICE
+  PAYMENT
+  DEBIT_NOTE
+  CREDIT_NOTE
+  ADJUSTMENT
+}
+
+enum SupplyCategory {
+  DRESSING
+  MEDICATION
+  INJECTION
+  NUTRITION
+  RESPIRATORY
+  HYGIENE
+  OTHER
+}
+
+enum StockMovementType {
+  ENTRY
+  EXIT
+  TRANSFER_OUT
+  TRANSFER_IN
+  ADJUSTMENT
+}
+
+enum DeliveryNoteStatus {
+  DRAFT
+  DELIVERED
+  SIGNED
+  CANCELLED
+}
+
+enum EquipmentStatus {
+  AVAILABLE
+  RENTED
+  MAINTENANCE
+  RETIRED
+}
+
+enum RentalStatus {
+  ACTIVE
+  RETURNED
+  OVERDUE
+}
+
+enum IncidentCategory {
+  CLINICAL
+  ADMINISTRATIVE
+  PROFESSIONAL
+  LOGISTIC
+}
+
+enum Severity {
+  LOW
+  MODERATE
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum AlertType {
+  AUTHORIZATION_EXPIRING
+  UNREGISTERED_VISIT
+  CRITICAL_STOCK
+  EQUIPMENT_OVERDUE
+  LICENSE_EXPIRING
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+}
+
+// ─────────────────────────────────────
+// COMPANY / AUTH
+// ─────────────────────────────────────
+
+model Company {
+  id           String       @id @default(uuid())
+  legalName    String
+  tradeName    String?
+  cuit         String       @unique
+  vatCondition VATCondition
+  iibbNumber   String?
+  address      String
+  city         String
+  province     String
+  postalCode   String?
+  phone        String?
+  email        String?
+  website      String?
+  logoUrl      String?
+  active       Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  deletedAt    DateTime?
+
+  branches      Branch[]
+  users         User[]
+  professionals Professional[]
+  supplies      Supply[]
+  equipment     Equipment[]
+  alertConfigs  AlertConfig[]
+  auditLogs     AuditLog[]
+  roles         Role[]
+
+  @@map("companies")
+}
+
+model Branch {
+  id        String    @id @default(uuid())
+  companyId String
+  name      String
+  address   String
+  city      String?
+  phone     String?
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  company        Company         @relation(fields: [companyId], references: [id])
+  users          User[]
+  internments    Internment[]
+  branchStocks   BranchStock[]
+  deliveryNotes  DeliveryNote[]
+  billingBatches BillingBatch[]
+  settlements    Settlement[]
+  alertConfigs   AlertConfig[]
+  patients       Patient[]
+  stockMovements StockMovement[]
+  equipment      Equipment[]
+
+  @@map("branches")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  companyId   String
+  name        String
+  description String?
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company         Company          @relation(fields: [companyId], references: [id])
+  users           User[]
+  rolePermissions RolePermission[]
+
+  @@unique([companyId, name])
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  module      String
+  action      String
+  description String?
+  createdAt   DateTime @default(now())
+
+  rolePermissions RolePermission[]
+
+  @@unique([module, action])
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String   @id @default(uuid())
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  companyId    String
+  branchId     String?
+  roleId       String
+  email        String    @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  deletedAt    DateTime?
+
+  company            Company            @relation(fields: [companyId], references: [id])
+  branch             Branch?            @relation(fields: [branchId], references: [id])
+  role               Role               @relation(fields: [roleId], references: [id])
+  refreshTokens      RefreshToken[]
+  auditLogs          AuditLog[]
+  functionalStatuses FunctionalStatus[]
+  clinicalNotes      ClinicalNote[]
+  medications        Medication[]
+  attachments        Attachment[]
+  stockMovements     StockMovement[]
+  deliveryNotes      DeliveryNote[]
+  incidents          Incident[]
+  assignedIncidents  Incident[]         @relation("AssignedIncidents")
+  budgets            Budget[]
+  billingBatches     BillingBatch[]
+  settlements        Settlement[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("refresh_tokens")
+}
+
+model AuditLog {
+  id        String      @id @default(uuid())
+  userId    String
+  companyId String
+  action    AuditAction
+  entity    String
+  entityId  String
+  ip        String
+  before    Json?
+  after     Json?
+  createdAt DateTime    @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model Patient {
+  id                     String        @id @default(uuid())
+  companyId              String
+  branchId               String
+  lastName               String
+  firstName              String
+  dni                    String
+  affiliateNumber        String?
+  dateOfBirth            DateTime
+  biologicalSex          BiologicalSex
+  selfPerceivedGender    String?
+  vatCondition           VATCondition
+  cuit                   String?
+  careAddress            String
+  careCity               String
+  careProvince           String
+  carePostalCode         String?
+  accessNotes            String?
+  phone                  String
+  email                  String?
+  bloodType              String?
+  rhFactor               String?
+  allergies              String?
+  referringDoctorName    String?
+  referringDoctorLicense String?
+  referringDoctorPhone   String?
+  notes                  String?
+  createdAt              DateTime      @default(now())
+  deletedAt              DateTime?
+
+  branch             Branch             @relation(fields: [branchId], references: [id])
+  contacts           PatientContact[]
+  functionalStatuses FunctionalStatus[]
+  internments        Internment[]
+
+  @@unique([companyId, dni])
+  @@map("patients")
+}
+
+model PatientContact {
+  id                 String   @id @default(uuid())
+  patientId          String
+  name               String
+  relationship       String
+  phone              String
+  phoneAlternative   String?
+  email              String?
+  livesAtCareAddress Boolean  @default(false)
+  availabilityHours  String?
+  isPrimary          Boolean  @default(false)
+  createdAt          DateTime @default(now())
+
+  patient Patient @relation(fields: [patientId], references: [id])
+
+  @@map("patient_contacts")
+}
+
+model FunctionalStatus {
+  id                     String   @id @default(uuid())
+  patientId              String
+  internmentId           String
+  recordedById           String
+  date                   DateTime
+  bedridden              Boolean  @default(false)
+  wheelchair             Boolean  @default(false)
+  oxygenDependent        Boolean  @default(false)
+  oxygenLitersPerMin     Decimal? @db.Decimal(5, 2)
+  tracheostomy           Boolean  @default(false)
+  pumpFeeding            Boolean  @default(false)
+  nasogastricTube        Boolean  @default(false)
+  urinaryCatheter        Boolean  @default(false)
+  pressureUlcers         Boolean  @default(false)
+  pressureUlcersLocation String?
+  barthelScore           Json?
+  notes                  String?
+  createdAt              DateTime @default(now())
+
+  patient    Patient    @relation(fields: [patientId], references: [id])
+  internment Internment @relation(fields: [internmentId], references: [id])
+  recordedBy User       @relation(fields: [recordedById], references: [id])
+
+  @@map("functional_statuses")
+}
+
+model Professional {
+  id                    String       @id @default(uuid())
+  companyId             String
+  lastName              String
+  firstName             String
+  dni                   String
+  cuit                  String
+  vatCondition          VATCondition
+  specialty             Specialty
+  secondarySpecialties  Json?
+  nationalLicense       String?
+  provincialLicense     String?
+  licenseProvince       String?
+  licenseExpiresAt      DateTime?
+  rnp                   String?
+  contractType          ContractType
+  cbu                   String
+  bankAlias             String?
+  bank                  String?
+  coverageZones         Json?
+  availableForEmergency Boolean      @default(false)
+  hasOwnVehicle         Boolean      @default(false)
+  phone                 String
+  email                 String?
+  active                Boolean      @default(true)
+  createdAt             DateTime     @default(now())
+  deletedAt             DateTime?
+
+  company      Company               @relation(fields: [companyId], references: [id])
+  insurerLinks ProfessionalInsurer[]
+  carePlans    CarePlan[]
+  visits       Visit[]
+  internments  Internment[]
+  settlements  Settlement[]
+
+  @@unique([companyId, cuit])
+  @@map("professionals")
+}
+
+model Internment {
+  id                         String           @id @default(uuid())
+  patientId                  String
+  branchId                   String
+  healthInsurerId            String
+  responsibleDoctorId        String
+  internmentType             InternmentType
+  admissionMode              AdmissionMode
+  admissionDate              DateTime
+  dischargeDate              DateTime?
+  dischargeReason            String?
+  mainDiagnosis              String
+  cie10Code                  String
+  referenceHospital          String?
+  omeRequestedBy             String?
+  omeDate                    DateTime?
+  medicalFamilyAgreement     Boolean          @default(false)
+  medicalFamilyAgreementDate DateTime?
+  status                     InternmentStatus @default(ACTIVE)
+  notes                      String?
+  createdAt                  DateTime         @default(now())
+  deletedAt                  DateTime?
+
+  patient            Patient            @relation(fields: [patientId], references: [id])
+  branch             Branch             @relation(fields: [branchId], references: [id])
+  healthInsurer      HealthInsurer      @relation(fields: [healthInsurerId], references: [id])
+  responsibleDoctor  Professional       @relation(fields: [responsibleDoctorId], references: [id])
+  authorizations     Authorization[]
+  carePlans          CarePlan[]
+  visits             Visit[]
+  clinicalNotes      ClinicalNote[]
+  diagnoses          Diagnosis[]
+  medications        Medication[]
+  attachments        Attachment[]
+  functionalStatuses FunctionalStatus[]
+  deliveryNotes      DeliveryNote[]
+  equipmentRentals   EquipmentRental[]
+  budgets            Budget[]
+  batchItems         BatchItem[]
+  currentAccounts    CurrentAccount[]
+  incidents          Incident[]
+
+  @@map("internments")
+}
+
+model Authorization {
+  id                String              @id @default(uuid())
+  internmentId      String
+  healthInsurerId   String
+  number            String
+  opNumber          String?
+  type              AuthorizationType
+  validFrom         DateTime
+  validTo           DateTime
+  authorizedModules Json
+  status            AuthorizationStatus @default(PENDING)
+  notes             String?
+  createdAt         DateTime            @default(now())
+
+  internment    Internment    @relation(fields: [internmentId], references: [id])
+  healthInsurer HealthInsurer @relation(fields: [healthInsurerId], references: [id])
+  carePlans     CarePlan[]
+
+  @@map("authorizations")
+}
+
+model CarePlan {
+  id              String    @id @default(uuid())
+  internmentId    String
+  professionalId  String
+  authorizationId String?
+  specialty       Specialty
+  frequency       Frequency
+  weekDays        Json?
+  estimatedTime   String?
+  totalSessions   Int?
+  startDate       DateTime
+  endDate         DateTime?
+  active          Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+
+  internment    Internment     @relation(fields: [internmentId], references: [id])
+  professional  Professional   @relation(fields: [professionalId], references: [id])
+  authorization Authorization? @relation(fields: [authorizationId], references: [id])
+  visits        Visit[]
+
+  @@map("care_plans")
+}
+
+model Visit {
+  id              String      @id @default(uuid())
+  carePlanId      String
+  professionalId  String
+  internmentId    String
+  scheduledDate   DateTime
+  scheduledTime   String?
+  completedAt     DateTime?
+  status          VisitStatus @default(SCHEDULED)
+  missedReason    String?
+  recovered       Boolean     @default(false)
+  recoveredFromId String?
+  lat             Decimal?    @db.Decimal(10, 7)
+  lng             Decimal?    @db.Decimal(10, 7)
+  billed          Boolean     @default(false)
+  notes           String?
+  createdAt       DateTime    @default(now())
+
+  carePlan     CarePlan      @relation(fields: [carePlanId], references: [id])
+  professional Professional  @relation(fields: [professionalId], references: [id])
+  internment   Internment    @relation(fields: [internmentId], references: [id])
+  clinicalNote ClinicalNote?
+  batchItems   BatchItem[]
+
+  @@map("visits")
+}
+
+model ClinicalNote {
+  id             String    @id @default(uuid())
+  internmentId   String
+  visitId        String?   @unique
+  professionalId String
+  specialty      Specialty
+  datetime       DateTime
+  content        String
+  contentHash    String
+  lockedAt       DateTime?
+  signed         Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+
+  internment   Internment   @relation(fields: [internmentId], references: [id])
+  visit        Visit?       @relation(fields: [visitId], references: [id])
+  professional User         @relation(fields: [professionalId], references: [id])
+  attachments  Attachment[]
+
+  @@map("clinical_notes")
+}
+
+model Diagnosis {
+  id               String          @id @default(uuid())
+  internmentId     String
+  cie10Code        String
+  cie10Description String
+  type             DiagnosisType
+  status           DiagnosisStatus @default(ACTIVE)
+  dateFrom         DateTime
+  dateTo           DateTime?
+  createdAt        DateTime        @default(now())
+
+  internment Internment @relation(fields: [internmentId], references: [id])
+
+  @@map("diagnoses")
+}
+
+model Medication {
+  id             String    @id @default(uuid())
+  internmentId   String
+  prescribedById String
+  name           String
+  dose           String
+  route          String
+  frequency      String
+  startDate      DateTime
+  endDate        DateTime?
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+
+  internment   Internment @relation(fields: [internmentId], references: [id])
+  prescribedBy User       @relation(fields: [prescribedById], references: [id])
+
+  @@map("medications")
+}
+
+model Attachment {
+  id             String         @id @default(uuid())
+  internmentId   String
+  clinicalNoteId String?
+  uploadedById   String
+  type           AttachmentType
+  fileName       String
+  storageUrl     String
+  mimeType       String
+  sizeBytes      BigInt
+  createdAt      DateTime       @default(now())
+
+  internment   Internment    @relation(fields: [internmentId], references: [id])
+  clinicalNote ClinicalNote? @relation(fields: [clinicalNoteId], references: [id])
+  uploadedBy   User          @relation(fields: [uploadedById], references: [id])
+
+  @@map("attachments")
+}
+
+model HealthInsurer {
+  id            String      @id @default(uuid())
+  name          String
+  acronym       String
+  cuit          String      @unique
+  rnos          String?
+  insurerType   InsurerType
+  billingEmail  String?
+  billingMode   BillingMode
+  cutoffDay     Int?
+  paymentDays   Int?
+  requiresPaper Boolean     @default(false)
+  active        Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  deletedAt     DateTime?
+
+  internments       Internment[]
+  authorizations    Authorization[]
+  serviceRates      InsurerServiceRate[]
+  professionalLinks ProfessionalInsurer[]
+  budgets           Budget[]
+  billingBatches    BillingBatch[]
+  currentAccounts   CurrentAccount[]
+
+  @@map("health_insurers")
+}
+
+model ServiceItem {
+  id          String      @id @default(uuid())
+  specialty   Specialty
+  code        String      @unique
+  description String
+  billingMode BillingMode
+  basePrice   Decimal     @db.Decimal(12, 2)
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  deletedAt   DateTime?
+
+  insurerRates InsurerServiceRate[]
+  budgetLines  BudgetLine[]
+  batchItems   BatchItem[]
+
+  @@map("service_items")
+}
+
+model InsurerServiceRate {
+  id              String    @id @default(uuid())
+  healthInsurerId String
+  serviceItemId   String
+  agreedPrice     Decimal   @db.Decimal(12, 2)
+  validFrom       DateTime
+  validTo         DateTime?
+  active          Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+
+  healthInsurer HealthInsurer @relation(fields: [healthInsurerId], references: [id])
+  serviceItem   ServiceItem   @relation(fields: [serviceItemId], references: [id])
+
+  @@unique([healthInsurerId, serviceItemId, validFrom])
+  @@map("insurer_service_rates")
+}
+
+model ProfessionalInsurer {
+  id              String    @id @default(uuid())
+  professionalId  String
+  healthInsurerId String
+  providerNumber  String
+  enabled         Boolean   @default(true)
+  enabledUntil    DateTime?
+  createdAt       DateTime  @default(now())
+
+  professional  Professional  @relation(fields: [professionalId], references: [id])
+  healthInsurer HealthInsurer @relation(fields: [healthInsurerId], references: [id])
+
+  @@unique([professionalId, healthInsurerId])
+  @@map("professional_insurers")
+}
+
+model Budget {
+  id                String       @id @default(uuid())
+  internmentId      String
+  healthInsurerId   String
+  createdById       String
+  number            String       @unique
+  period            String
+  servicesSubtotal  Decimal      @db.Decimal(12, 2)
+  suppliesSubtotal  Decimal      @db.Decimal(12, 2)
+  equipmentSubtotal Decimal      @db.Decimal(12, 2)
+  total             Decimal      @db.Decimal(12, 2)
+  status            BudgetStatus @default(DRAFT)
+  approvedAt        DateTime?
+  createdAt         DateTime     @default(now())
+
+  internment    Internment    @relation(fields: [internmentId], references: [id])
+  healthInsurer HealthInsurer @relation(fields: [healthInsurerId], references: [id])
+  createdBy     User          @relation(fields: [createdById], references: [id])
+  lines         BudgetLine[]
+
+  @@map("budgets")
+}
+
+model BudgetLine {
+  id            String  @id @default(uuid())
+  budgetId      String
+  serviceItemId String?
+  supplyId      String?
+  equipmentId   String?
+  description   String
+  quantity      Int
+  basePrice     Decimal @db.Decimal(12, 2)
+  agreedPrice   Decimal @db.Decimal(12, 2)
+  finalPrice    Decimal @db.Decimal(12, 2)
+  subtotal      Decimal @db.Decimal(12, 2)
+
+  budget      Budget       @relation(fields: [budgetId], references: [id])
+  serviceItem ServiceItem? @relation(fields: [serviceItemId], references: [id])
+  supply      Supply?      @relation(fields: [supplyId], references: [id])
+  equipment   Equipment?   @relation(fields: [equipmentId], references: [id])
+
+  @@map("budget_lines")
+}
+
+model BillingBatch {
+  id              String      @id @default(uuid())
+  healthInsurerId String
+  branchId        String
+  generatedById   String
+  number          String      @unique
+  period          String
+  grossTotal      Decimal     @db.Decimal(12, 2)
+  netTotal        Decimal     @db.Decimal(12, 2)
+  status          BatchStatus @default(DRAFT)
+  submittedDate   DateTime?
+  paidDate        DateTime?
+  expedientNumber String?
+  notes           String?
+  createdAt       DateTime    @default(now())
+
+  healthInsurer   HealthInsurer    @relation(fields: [healthInsurerId], references: [id])
+  branch          Branch           @relation(fields: [branchId], references: [id])
+  generatedBy     User             @relation(fields: [generatedById], references: [id])
+  items           BatchItem[]
+  currentAccounts CurrentAccount[]
+
+  @@map("billing_batches")
+}
+
+model BatchItem {
+  id              String     @id @default(uuid())
+  batchId         String
+  internmentId    String
+  visitId         String?
+  serviceItemId   String?
+  description     String
+  quantity        Int
+  unitPrice       Decimal    @db.Decimal(12, 2)
+  subtotal        Decimal    @db.Decimal(12, 2)
+  status          ItemStatus @default(INCLUDED)
+  rejectionReason String?
+  createdAt       DateTime   @default(now())
+
+  batch       BillingBatch @relation(fields: [batchId], references: [id])
+  internment  Internment   @relation(fields: [internmentId], references: [id])
+  visit       Visit?       @relation(fields: [visitId], references: [id])
+  serviceItem ServiceItem? @relation(fields: [serviceItemId], references: [id])
+
+  @@map("batch_items")
+}
+
+model Settlement {
+  id                     String           @id @default(uuid())
+  professionalId         String
+  branchId               String
+  generatedById          String
+  period                 String
+  visitCount             Int
+  grossTotal             Decimal          @db.Decimal(12, 2)
+  incomeTaxWithholding   Decimal          @db.Decimal(12, 2)
+  grossIncomeWithholding Decimal?         @db.Decimal(12, 2)
+  otherWithholdings      Decimal?         @db.Decimal(12, 2)
+  netTotal               Decimal          @db.Decimal(12, 2)
+  status                 SettlementStatus @default(OPEN)
+  paidAt                 DateTime?
+  createdAt              DateTime         @default(now())
+
+  professional Professional @relation(fields: [professionalId], references: [id])
+  branch       Branch       @relation(fields: [branchId], references: [id])
+  generatedBy  User         @relation(fields: [generatedById], references: [id])
+
+  @@map("settlements")
+}
+
+model CurrentAccount {
+  id              String          @id @default(uuid())
+  internmentId    String
+  healthInsurerId String
+  batchId         String?
+  movementType    AccountMovement
+  concept         String
+  debit           Decimal         @db.Decimal(12, 2)
+  credit          Decimal         @db.Decimal(12, 2)
+  balance         Decimal         @db.Decimal(12, 2)
+  date            DateTime
+  createdAt       DateTime        @default(now())
+
+  internment    Internment    @relation(fields: [internmentId], references: [id])
+  healthInsurer HealthInsurer @relation(fields: [healthInsurerId], references: [id])
+  batch         BillingBatch? @relation(fields: [batchId], references: [id])
+
+  @@map("current_accounts")
+}
+
+model Supply {
+  id        String         @id @default(uuid())
+  companyId String
+  name      String
+  sku       String
+  unit      String
+  category  SupplyCategory
+  minStock  Int
+  baseCost  Decimal        @db.Decimal(12, 2)
+  basePrice Decimal        @db.Decimal(12, 2)
+  active    Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  deletedAt DateTime?
+
+  company        Company            @relation(fields: [companyId], references: [id])
+  branchStocks   BranchStock[]
+  stockMovements StockMovement[]
+  deliveryItems  DeliveryNoteItem[]
+  budgetLines    BudgetLine[]
+
+  @@unique([companyId, sku])
+  @@map("supplies")
+}
+
+model BranchStock {
+  id        String   @id @default(uuid())
+  supplyId  String
+  branchId  String
+  quantity  Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  supply Supply @relation(fields: [supplyId], references: [id])
+  branch Branch @relation(fields: [branchId], references: [id])
+
+  @@unique([supplyId, branchId])
+  @@map("branch_stocks")
+}
+
+model StockMovement {
+  id             String            @id @default(uuid())
+  supplyId       String
+  branchId       String
+  performedById  String
+  movementType   StockMovementType
+  quantity       Int
+  unitCost       Decimal?          @db.Decimal(12, 2)
+  deliveryNoteId String?
+  notes          String?
+  createdAt      DateTime          @default(now())
+
+  supply       Supply        @relation(fields: [supplyId], references: [id])
+  branch       Branch        @relation(fields: [branchId], references: [id])
+  performedBy  User          @relation(fields: [performedById], references: [id])
+  deliveryNote DeliveryNote? @relation(fields: [deliveryNoteId], references: [id])
+
+  @@map("stock_movements")
+}
+
+model DeliveryNote {
+  id              String             @id @default(uuid())
+  internmentId    String
+  branchId        String
+  generatedById   String
+  number          String             @unique
+  date            DateTime
+  status          DeliveryNoteStatus @default(DRAFT)
+  familySignature Boolean            @default(false)
+  notes           String?
+  createdAt       DateTime           @default(now())
+
+  internment     Internment         @relation(fields: [internmentId], references: [id])
+  branch         Branch             @relation(fields: [branchId], references: [id])
+  generatedBy    User               @relation(fields: [generatedById], references: [id])
+  items          DeliveryNoteItem[]
+  stockMovements StockMovement[]
+
+  @@map("delivery_notes")
+}
+
+model DeliveryNoteItem {
+  id             String  @id @default(uuid())
+  deliveryNoteId String
+  supplyId       String
+  quantity       Int
+  unitPrice      Decimal @db.Decimal(12, 2)
+
+  deliveryNote DeliveryNote @relation(fields: [deliveryNoteId], references: [id])
+  supply       Supply       @relation(fields: [supplyId], references: [id])
+
+  @@map("delivery_note_items")
+}
+
+model Equipment {
+  id                String          @id @default(uuid())
+  companyId         String
+  branchId          String
+  name              String
+  brand             String?
+  model             String?
+  serialNumber      String?
+  baseDailyRate     Decimal         @db.Decimal(12, 2)
+  status            EquipmentStatus @default(AVAILABLE)
+  nextMaintenanceAt DateTime?
+  createdAt         DateTime        @default(now())
+
+  company     Company           @relation(fields: [companyId], references: [id])
+  branch      Branch            @relation(fields: [branchId], references: [id])
+  rentals     EquipmentRental[]
+  budgetLines BudgetLine[]
+
+  @@map("equipment")
+}
+
+model EquipmentRental {
+  id                 String       @id @default(uuid())
+  equipmentId        String
+  internmentId       String
+  deliveryDate       DateTime
+  expectedReturnDate DateTime
+  actualReturnDate   DateTime?
+  dailyRate          Decimal      @db.Decimal(12, 2)
+  status             RentalStatus @default(ACTIVE)
+  createdAt          DateTime     @default(now())
+
+  equipment  Equipment  @relation(fields: [equipmentId], references: [id])
+  internment Internment @relation(fields: [internmentId], references: [id])
+
+  @@map("equipment_rentals")
+}
+
+model Incident {
+  id           String           @id @default(uuid())
+  internmentId String
+  reportedById String
+  assignedToId String?
+  category     IncidentCategory
+  severity     Severity
+  description  String
+  actionTaken  String?
+  status       IncidentStatus   @default(OPEN)
+  incidentDate DateTime
+  closedAt     DateTime?
+  createdAt    DateTime         @default(now())
+
+  internment Internment @relation(fields: [internmentId], references: [id])
+  reportedBy User       @relation(fields: [reportedById], references: [id])
+  assignedTo User?      @relation("AssignedIncidents", fields: [assignedToId], references: [id])
+
+  @@map("incidents")
+}
+
+model AlertConfig {
+  id            String    @id @default(uuid())
+  companyId     String
+  branchId      String?
+  alertType     AlertType
+  daysInAdvance Int       @default(7)
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  company Company @relation(fields: [companyId], references: [id])
+  branch  Branch? @relation(fields: [branchId], references: [id])
+
+  @@map("alert_configs")
+}
