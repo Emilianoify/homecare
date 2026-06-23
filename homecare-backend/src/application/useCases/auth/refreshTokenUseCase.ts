@@ -38,7 +38,7 @@ export class RefreshTokenUseCase {
     )
 
     const refreshToken = jwt.sign(
-      { userId: user.id },
+      { userId: user.id, nonce: Math.random() },
       env.JWT_SECRET,
       { expiresIn: env.REFRESH_TOKEN_EXPIRY as jwt.SignOptions['expiresIn'] }
     )

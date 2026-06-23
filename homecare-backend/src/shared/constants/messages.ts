@@ -10,6 +10,9 @@ export const ERROR_MESSAGES = {
     NOT_FOUND:  'Paciente no encontrado',
     DNI_EXISTS: 'El DNI ya está registrado',
   },
+  PATIENT_CONTACT: {
+    NOT_FOUND: 'Contacto no encontrado',
+  },
   PROFESSIONAL: {
     NOT_FOUND:   'Profesional no encontrado',
     CUIT_EXISTS: 'El CUIT ya está registrado',
@@ -45,6 +48,13 @@ export const SUCCESS_MESSAGES = {
     UPDATED: 'Paciente actualizado exitosamente',
     DELETED: 'Paciente eliminado exitosamente',
   },
+  PATIENT_CONTACT: {
+    CREATED: 'Contacto creado exitosamente',
+    FOUND:   'Contacto obtenido exitosamente',
+    LIST:    'Contactos obtenidos exitosamente',
+    UPDATED: 'Contacto actualizado exitosamente',
+    DELETED: 'Contacto eliminado exitosamente',
+  },
   PROFESSIONAL: {
     CREATED: 'Profesional creado exitosamente',
     FOUND:   'Profesional obtenido exitosamente',
@@ -58,6 +68,7 @@ export const SUCCESS_MESSAGES = {
     LIST:       'Internaciones obtenidas exitosamente',
     UPDATED:    'Internación actualizada exitosamente',
     DISCHARGED: 'Egreso registrado exitosamente',
+    DELETED:    'Internación eliminada exitosamente',
   },
   HEALTH_INSURER: {
     CREATED: 'Obra social creada exitosamente',

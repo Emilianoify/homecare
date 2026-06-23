@@ -23,11 +23,17 @@ async function main(): Promise<void> {
     },
   })
 
+  // Clean up old version 0 UUID records if present
+  await prisma.refreshToken.deleteMany({ where: { user: { email: 'admin@homecare.com' } } })
+  await prisma.auditLog.deleteMany({ where: { user: { email: 'admin@homecare.com' } } })
+  await prisma.user.deleteMany({ where: { email: 'admin@homecare.com' } })
+  await prisma.branch.deleteMany({ where: { id: 'aaaaaaaa-0000-0000-0000-000000000001' } })
+
   const branch = await prisma.branch.upsert({
-    where:  { id: 'aaaaaaaa-0000-0000-0000-000000000001' },
+    where:  { id: 'aaaaaaaa-0000-4000-a000-000000000001' },
     update: {},
     create: {
-      id:        'aaaaaaaa-0000-0000-0000-000000000001',
+      id:        'aaaaaaaa-0000-4000-a000-000000000001',
       companyId: company.id,
       name:      'Casa Central',
       address:   'Av. Corrientes 1234',

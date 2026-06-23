@@ -36,7 +36,7 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction): void 
     res.status(err.statusCode).json({ success: false, message: err.message })
     return
   }
-  logger.error('Error inesperado', { err })
+  logger.error('Error inesperado', err instanceof Error ? { message: err.message, stack: err.stack } : { err })
   sendInternalError(res, ERROR_MESSAGES.GENERAL.INTERNAL_ERROR)
 })
 

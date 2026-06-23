@@ -5,6 +5,8 @@ export const loginSchema = z.object({
   password: z.string().min(6),
 })
 
+const uuidSchema = z.string().uuid('UUID inválido')
+
 export const registerSchema = z.object({
   email:     z.email(),
   password:  z.string()
@@ -13,9 +15,9 @@ export const registerSchema = z.object({
                .regex(/[0-9]/, 'Debe contener al menos un número'),
   firstName: z.string().min(2).max(100),
   lastName:  z.string().min(2).max(100),
-  companyId: z.uuid(),
-  branchId:  z.uuid().optional(),
-  roleId:    z.uuid(),
+  companyId: uuidSchema,
+  branchId:  uuidSchema.optional(),
+  roleId:    uuidSchema,
 })
 
 export type LoginDto    = z.infer<typeof loginSchema>
