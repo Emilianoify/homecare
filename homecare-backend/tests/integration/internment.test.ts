@@ -88,6 +88,7 @@ describe('Internment Endpoints Integration Tests', () => {
 
     const insurer = await prisma.healthInsurer.create({
       data: {
+        companyId:   company.id,
         name:        'Obra Social Test',
         acronym:     'OST',
         cuit:        insurerCuit,

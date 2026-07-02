@@ -4781,6 +4781,7 @@ export namespace Prisma {
     alertConfigs: number
     auditLogs: number
     roles: number
+    healthInsurers: number
   }
 
   export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4792,6 +4793,7 @@ export namespace Prisma {
     alertConfigs?: boolean | CompanyCountOutputTypeCountAlertConfigsArgs
     auditLogs?: boolean | CompanyCountOutputTypeCountAuditLogsArgs
     roles?: boolean | CompanyCountOutputTypeCountRolesArgs
+    healthInsurers?: boolean | CompanyCountOutputTypeCountHealthInsurersArgs
   }
 
   // Custom InputTypes
@@ -4859,6 +4861,13 @@ export namespace Prisma {
    */
   export type CompanyCountOutputTypeCountRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RoleWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountHealthInsurersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HealthInsurerWhereInput
   }
 
 
@@ -6187,6 +6196,7 @@ export namespace Prisma {
     alertConfigs?: boolean | Company$alertConfigsArgs<ExtArgs>
     auditLogs?: boolean | Company$auditLogsArgs<ExtArgs>
     roles?: boolean | Company$rolesArgs<ExtArgs>
+    healthInsurers?: boolean | Company$healthInsurersArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["company"]>
 
@@ -6260,6 +6270,7 @@ export namespace Prisma {
     alertConfigs?: boolean | Company$alertConfigsArgs<ExtArgs>
     auditLogs?: boolean | Company$auditLogsArgs<ExtArgs>
     roles?: boolean | Company$rolesArgs<ExtArgs>
+    healthInsurers?: boolean | Company$healthInsurersArgs<ExtArgs>
     _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -6276,6 +6287,7 @@ export namespace Prisma {
       alertConfigs: Prisma.$AlertConfigPayload<ExtArgs>[]
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
       roles: Prisma.$RolePayload<ExtArgs>[]
+      healthInsurers: Prisma.$HealthInsurerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6697,6 +6709,7 @@ export namespace Prisma {
     alertConfigs<T extends Company$alertConfigsArgs<ExtArgs> = {}>(args?: Subset<T, Company$alertConfigsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     auditLogs<T extends Company$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Company$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends Company$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Company$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    healthInsurers<T extends Company$healthInsurersArgs<ExtArgs> = {}>(args?: Subset<T, Company$healthInsurersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HealthInsurerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7325,6 +7338,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RoleScalarFieldEnum | RoleScalarFieldEnum[]
+  }
+
+  /**
+   * Company.healthInsurers
+   */
+  export type Company$healthInsurersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HealthInsurer
+     */
+    select?: HealthInsurerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HealthInsurer
+     */
+    omit?: HealthInsurerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HealthInsurerInclude<ExtArgs> | null
+    where?: HealthInsurerWhereInput
+    orderBy?: HealthInsurerOrderByWithRelationInput | HealthInsurerOrderByWithRelationInput[]
+    cursor?: HealthInsurerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: HealthInsurerScalarFieldEnum | HealthInsurerScalarFieldEnum[]
   }
 
   /**
@@ -31249,6 +31286,7 @@ export namespace Prisma {
 
   export type HealthInsurerMinAggregateOutputType = {
     id: string | null
+    companyId: string | null
     name: string | null
     acronym: string | null
     cuit: string | null
@@ -31259,6 +31297,7 @@ export namespace Prisma {
     cutoffDay: number | null
     paymentDays: number | null
     requiresPaper: boolean | null
+    operativeNotes: string | null
     active: boolean | null
     createdAt: Date | null
     deletedAt: Date | null
@@ -31266,6 +31305,7 @@ export namespace Prisma {
 
   export type HealthInsurerMaxAggregateOutputType = {
     id: string | null
+    companyId: string | null
     name: string | null
     acronym: string | null
     cuit: string | null
@@ -31276,6 +31316,7 @@ export namespace Prisma {
     cutoffDay: number | null
     paymentDays: number | null
     requiresPaper: boolean | null
+    operativeNotes: string | null
     active: boolean | null
     createdAt: Date | null
     deletedAt: Date | null
@@ -31283,6 +31324,7 @@ export namespace Prisma {
 
   export type HealthInsurerCountAggregateOutputType = {
     id: number
+    companyId: number
     name: number
     acronym: number
     cuit: number
@@ -31293,6 +31335,7 @@ export namespace Prisma {
     cutoffDay: number
     paymentDays: number
     requiresPaper: number
+    operativeNotes: number
     active: number
     createdAt: number
     deletedAt: number
@@ -31312,6 +31355,7 @@ export namespace Prisma {
 
   export type HealthInsurerMinAggregateInputType = {
     id?: true
+    companyId?: true
     name?: true
     acronym?: true
     cuit?: true
@@ -31322,6 +31366,7 @@ export namespace Prisma {
     cutoffDay?: true
     paymentDays?: true
     requiresPaper?: true
+    operativeNotes?: true
     active?: true
     createdAt?: true
     deletedAt?: true
@@ -31329,6 +31374,7 @@ export namespace Prisma {
 
   export type HealthInsurerMaxAggregateInputType = {
     id?: true
+    companyId?: true
     name?: true
     acronym?: true
     cuit?: true
@@ -31339,6 +31385,7 @@ export namespace Prisma {
     cutoffDay?: true
     paymentDays?: true
     requiresPaper?: true
+    operativeNotes?: true
     active?: true
     createdAt?: true
     deletedAt?: true
@@ -31346,6 +31393,7 @@ export namespace Prisma {
 
   export type HealthInsurerCountAggregateInputType = {
     id?: true
+    companyId?: true
     name?: true
     acronym?: true
     cuit?: true
@@ -31356,6 +31404,7 @@ export namespace Prisma {
     cutoffDay?: true
     paymentDays?: true
     requiresPaper?: true
+    operativeNotes?: true
     active?: true
     createdAt?: true
     deletedAt?: true
@@ -31450,6 +31499,7 @@ export namespace Prisma {
 
   export type HealthInsurerGroupByOutputType = {
     id: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -31460,6 +31510,7 @@ export namespace Prisma {
     cutoffDay: number | null
     paymentDays: number | null
     requiresPaper: boolean
+    operativeNotes: string | null
     active: boolean
     createdAt: Date
     deletedAt: Date | null
@@ -31486,6 +31537,7 @@ export namespace Prisma {
 
   export type HealthInsurerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     name?: boolean
     acronym?: boolean
     cuit?: boolean
@@ -31496,9 +31548,11 @@ export namespace Prisma {
     cutoffDay?: boolean
     paymentDays?: boolean
     requiresPaper?: boolean
+    operativeNotes?: boolean
     active?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     internments?: boolean | HealthInsurer$internmentsArgs<ExtArgs>
     authorizations?: boolean | HealthInsurer$authorizationsArgs<ExtArgs>
     serviceRates?: boolean | HealthInsurer$serviceRatesArgs<ExtArgs>
@@ -31511,6 +31565,7 @@ export namespace Prisma {
 
   export type HealthInsurerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     name?: boolean
     acronym?: boolean
     cuit?: boolean
@@ -31521,13 +31576,16 @@ export namespace Prisma {
     cutoffDay?: boolean
     paymentDays?: boolean
     requiresPaper?: boolean
+    operativeNotes?: boolean
     active?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["healthInsurer"]>
 
   export type HealthInsurerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     name?: boolean
     acronym?: boolean
     cuit?: boolean
@@ -31538,13 +31596,16 @@ export namespace Prisma {
     cutoffDay?: boolean
     paymentDays?: boolean
     requiresPaper?: boolean
+    operativeNotes?: boolean
     active?: boolean
     createdAt?: boolean
     deletedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["healthInsurer"]>
 
   export type HealthInsurerSelectScalar = {
     id?: boolean
+    companyId?: boolean
     name?: boolean
     acronym?: boolean
     cuit?: boolean
@@ -31555,13 +31616,15 @@ export namespace Prisma {
     cutoffDay?: boolean
     paymentDays?: boolean
     requiresPaper?: boolean
+    operativeNotes?: boolean
     active?: boolean
     createdAt?: boolean
     deletedAt?: boolean
   }
 
-  export type HealthInsurerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "acronym" | "cuit" | "rnos" | "insurerType" | "billingEmail" | "billingMode" | "cutoffDay" | "paymentDays" | "requiresPaper" | "active" | "createdAt" | "deletedAt", ExtArgs["result"]["healthInsurer"]>
+  export type HealthInsurerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "name" | "acronym" | "cuit" | "rnos" | "insurerType" | "billingEmail" | "billingMode" | "cutoffDay" | "paymentDays" | "requiresPaper" | "operativeNotes" | "active" | "createdAt" | "deletedAt", ExtArgs["result"]["healthInsurer"]>
   export type HealthInsurerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     internments?: boolean | HealthInsurer$internmentsArgs<ExtArgs>
     authorizations?: boolean | HealthInsurer$authorizationsArgs<ExtArgs>
     serviceRates?: boolean | HealthInsurer$serviceRatesArgs<ExtArgs>
@@ -31571,12 +31634,17 @@ export namespace Prisma {
     currentAccounts?: boolean | HealthInsurer$currentAccountsArgs<ExtArgs>
     _count?: boolean | HealthInsurerCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type HealthInsurerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type HealthInsurerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type HealthInsurerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
+  export type HealthInsurerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+  }
 
   export type $HealthInsurerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "HealthInsurer"
     objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
       internments: Prisma.$InternmentPayload<ExtArgs>[]
       authorizations: Prisma.$AuthorizationPayload<ExtArgs>[]
       serviceRates: Prisma.$InsurerServiceRatePayload<ExtArgs>[]
@@ -31587,6 +31655,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      companyId: string
       name: string
       acronym: string
       cuit: string
@@ -31597,6 +31666,7 @@ export namespace Prisma {
       cutoffDay: number | null
       paymentDays: number | null
       requiresPaper: boolean
+      operativeNotes: string | null
       active: boolean
       createdAt: Date
       deletedAt: Date | null
@@ -31994,6 +32064,7 @@ export namespace Prisma {
    */
   export interface Prisma__HealthInsurerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     internments<T extends HealthInsurer$internmentsArgs<ExtArgs> = {}>(args?: Subset<T, HealthInsurer$internmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InternmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     authorizations<T extends HealthInsurer$authorizationsArgs<ExtArgs> = {}>(args?: Subset<T, HealthInsurer$authorizationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuthorizationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     serviceRates<T extends HealthInsurer$serviceRatesArgs<ExtArgs> = {}>(args?: Subset<T, HealthInsurer$serviceRatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InsurerServiceRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -32031,6 +32102,7 @@ export namespace Prisma {
    */
   interface HealthInsurerFieldRefs {
     readonly id: FieldRef<"HealthInsurer", 'String'>
+    readonly companyId: FieldRef<"HealthInsurer", 'String'>
     readonly name: FieldRef<"HealthInsurer", 'String'>
     readonly acronym: FieldRef<"HealthInsurer", 'String'>
     readonly cuit: FieldRef<"HealthInsurer", 'String'>
@@ -32041,6 +32113,7 @@ export namespace Prisma {
     readonly cutoffDay: FieldRef<"HealthInsurer", 'Int'>
     readonly paymentDays: FieldRef<"HealthInsurer", 'Int'>
     readonly requiresPaper: FieldRef<"HealthInsurer", 'Boolean'>
+    readonly operativeNotes: FieldRef<"HealthInsurer", 'String'>
     readonly active: FieldRef<"HealthInsurer", 'Boolean'>
     readonly createdAt: FieldRef<"HealthInsurer", 'DateTime'>
     readonly deletedAt: FieldRef<"HealthInsurer", 'DateTime'>
@@ -32298,6 +32371,10 @@ export namespace Prisma {
      */
     data: HealthInsurerCreateManyInput | HealthInsurerCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HealthInsurerIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -32368,6 +32445,10 @@ export namespace Prisma {
      * Limit how many HealthInsurers to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HealthInsurerIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -54693,6 +54774,7 @@ export namespace Prisma {
 
   export const HealthInsurerScalarFieldEnum: {
     id: 'id',
+    companyId: 'companyId',
     name: 'name',
     acronym: 'acronym',
     cuit: 'cuit',
@@ -54703,6 +54785,7 @@ export namespace Prisma {
     cutoffDay: 'cutoffDay',
     paymentDays: 'paymentDays',
     requiresPaper: 'requiresPaper',
+    operativeNotes: 'operativeNotes',
     active: 'active',
     createdAt: 'createdAt',
     deletedAt: 'deletedAt'
@@ -55623,6 +55706,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigListRelationFilter
     auditLogs?: AuditLogListRelationFilter
     roles?: RoleListRelationFilter
+    healthInsurers?: HealthInsurerListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
@@ -55651,6 +55735,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigOrderByRelationAggregateInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
     roles?: RoleOrderByRelationAggregateInput
+    healthInsurers?: HealthInsurerOrderByRelationAggregateInput
   }
 
   export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -55682,6 +55767,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigListRelationFilter
     auditLogs?: AuditLogListRelationFilter
     roles?: RoleListRelationFilter
+    healthInsurers?: HealthInsurerListRelationFilter
   }, "id" | "cuit">
 
   export type CompanyOrderByWithAggregationInput = {
@@ -57721,6 +57807,7 @@ export namespace Prisma {
     OR?: HealthInsurerWhereInput[]
     NOT?: HealthInsurerWhereInput | HealthInsurerWhereInput[]
     id?: StringFilter<"HealthInsurer"> | string
+    companyId?: StringFilter<"HealthInsurer"> | string
     name?: StringFilter<"HealthInsurer"> | string
     acronym?: StringFilter<"HealthInsurer"> | string
     cuit?: StringFilter<"HealthInsurer"> | string
@@ -57731,9 +57818,11 @@ export namespace Prisma {
     cutoffDay?: IntNullableFilter<"HealthInsurer"> | number | null
     paymentDays?: IntNullableFilter<"HealthInsurer"> | number | null
     requiresPaper?: BoolFilter<"HealthInsurer"> | boolean
+    operativeNotes?: StringNullableFilter<"HealthInsurer"> | string | null
     active?: BoolFilter<"HealthInsurer"> | boolean
     createdAt?: DateTimeFilter<"HealthInsurer"> | Date | string
     deletedAt?: DateTimeNullableFilter<"HealthInsurer"> | Date | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     internments?: InternmentListRelationFilter
     authorizations?: AuthorizationListRelationFilter
     serviceRates?: InsurerServiceRateListRelationFilter
@@ -57745,6 +57834,7 @@ export namespace Prisma {
 
   export type HealthInsurerOrderByWithRelationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     name?: SortOrder
     acronym?: SortOrder
     cuit?: SortOrder
@@ -57755,9 +57845,11 @@ export namespace Prisma {
     cutoffDay?: SortOrderInput | SortOrder
     paymentDays?: SortOrderInput | SortOrder
     requiresPaper?: SortOrder
+    operativeNotes?: SortOrderInput | SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    company?: CompanyOrderByWithRelationInput
     internments?: InternmentOrderByRelationAggregateInput
     authorizations?: AuthorizationOrderByRelationAggregateInput
     serviceRates?: InsurerServiceRateOrderByRelationAggregateInput
@@ -57769,12 +57861,14 @@ export namespace Prisma {
 
   export type HealthInsurerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    cuit?: string
+    companyId_cuit?: HealthInsurerCompanyIdCuitCompoundUniqueInput
     AND?: HealthInsurerWhereInput | HealthInsurerWhereInput[]
     OR?: HealthInsurerWhereInput[]
     NOT?: HealthInsurerWhereInput | HealthInsurerWhereInput[]
+    companyId?: StringFilter<"HealthInsurer"> | string
     name?: StringFilter<"HealthInsurer"> | string
     acronym?: StringFilter<"HealthInsurer"> | string
+    cuit?: StringFilter<"HealthInsurer"> | string
     rnos?: StringNullableFilter<"HealthInsurer"> | string | null
     insurerType?: EnumInsurerTypeFilter<"HealthInsurer"> | $Enums.InsurerType
     billingEmail?: StringNullableFilter<"HealthInsurer"> | string | null
@@ -57782,9 +57876,11 @@ export namespace Prisma {
     cutoffDay?: IntNullableFilter<"HealthInsurer"> | number | null
     paymentDays?: IntNullableFilter<"HealthInsurer"> | number | null
     requiresPaper?: BoolFilter<"HealthInsurer"> | boolean
+    operativeNotes?: StringNullableFilter<"HealthInsurer"> | string | null
     active?: BoolFilter<"HealthInsurer"> | boolean
     createdAt?: DateTimeFilter<"HealthInsurer"> | Date | string
     deletedAt?: DateTimeNullableFilter<"HealthInsurer"> | Date | string | null
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     internments?: InternmentListRelationFilter
     authorizations?: AuthorizationListRelationFilter
     serviceRates?: InsurerServiceRateListRelationFilter
@@ -57792,10 +57888,11 @@ export namespace Prisma {
     budgets?: BudgetListRelationFilter
     billingBatches?: BillingBatchListRelationFilter
     currentAccounts?: CurrentAccountListRelationFilter
-  }, "id" | "cuit">
+  }, "id" | "companyId_cuit">
 
   export type HealthInsurerOrderByWithAggregationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     name?: SortOrder
     acronym?: SortOrder
     cuit?: SortOrder
@@ -57806,6 +57903,7 @@ export namespace Prisma {
     cutoffDay?: SortOrderInput | SortOrder
     paymentDays?: SortOrderInput | SortOrder
     requiresPaper?: SortOrder
+    operativeNotes?: SortOrderInput | SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -57821,6 +57919,7 @@ export namespace Prisma {
     OR?: HealthInsurerScalarWhereWithAggregatesInput[]
     NOT?: HealthInsurerScalarWhereWithAggregatesInput | HealthInsurerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"HealthInsurer"> | string
+    companyId?: StringWithAggregatesFilter<"HealthInsurer"> | string
     name?: StringWithAggregatesFilter<"HealthInsurer"> | string
     acronym?: StringWithAggregatesFilter<"HealthInsurer"> | string
     cuit?: StringWithAggregatesFilter<"HealthInsurer"> | string
@@ -57831,6 +57930,7 @@ export namespace Prisma {
     cutoffDay?: IntNullableWithAggregatesFilter<"HealthInsurer"> | number | null
     paymentDays?: IntNullableWithAggregatesFilter<"HealthInsurer"> | number | null
     requiresPaper?: BoolWithAggregatesFilter<"HealthInsurer"> | boolean
+    operativeNotes?: StringNullableWithAggregatesFilter<"HealthInsurer"> | string | null
     active?: BoolWithAggregatesFilter<"HealthInsurer"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"HealthInsurer"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"HealthInsurer"> | Date | string | null
@@ -59459,6 +59559,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
     roles?: RoleCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
@@ -59487,6 +59588,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
     roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
@@ -59515,6 +59617,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
     roles?: RoleUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
@@ -59543,6 +59646,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
     roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
@@ -61857,9 +61961,11 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutHealthInsurersInput
     internments?: InternmentCreateNestedManyWithoutHealthInsurerInput
     authorizations?: AuthorizationCreateNestedManyWithoutHealthInsurerInput
     serviceRates?: InsurerServiceRateCreateNestedManyWithoutHealthInsurerInput
@@ -61871,6 +61977,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedCreateInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -61881,6 +61988,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -61905,9 +62013,11 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput
     internments?: InternmentUpdateManyWithoutHealthInsurerNestedInput
     authorizations?: AuthorizationUpdateManyWithoutHealthInsurerNestedInput
     serviceRates?: InsurerServiceRateUpdateManyWithoutHealthInsurerNestedInput
@@ -61919,6 +62029,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -61929,6 +62040,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -61943,6 +62055,7 @@ export namespace Prisma {
 
   export type HealthInsurerCreateManyInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -61953,6 +62066,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -61970,6 +62084,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -61977,6 +62092,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -61987,6 +62103,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -63753,6 +63870,12 @@ export namespace Prisma {
     none?: RoleWhereInput
   }
 
+  export type HealthInsurerListRelationFilter = {
+    every?: HealthInsurerWhereInput
+    some?: HealthInsurerWhereInput
+    none?: HealthInsurerWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -63787,6 +63910,10 @@ export namespace Prisma {
   }
 
   export type RoleOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type HealthInsurerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -65613,8 +65740,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type HealthInsurerCompanyIdCuitCompoundUniqueInput = {
+    companyId: string
+    cuit: string
+  }
+
   export type HealthInsurerCountOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     name?: SortOrder
     acronym?: SortOrder
     cuit?: SortOrder
@@ -65625,6 +65758,7 @@ export namespace Prisma {
     cutoffDay?: SortOrder
     paymentDays?: SortOrder
     requiresPaper?: SortOrder
+    operativeNotes?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
@@ -65637,6 +65771,7 @@ export namespace Prisma {
 
   export type HealthInsurerMaxOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     name?: SortOrder
     acronym?: SortOrder
     cuit?: SortOrder
@@ -65647,6 +65782,7 @@ export namespace Prisma {
     cutoffDay?: SortOrder
     paymentDays?: SortOrder
     requiresPaper?: SortOrder
+    operativeNotes?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
@@ -65654,6 +65790,7 @@ export namespace Prisma {
 
   export type HealthInsurerMinOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     name?: SortOrder
     acronym?: SortOrder
     cuit?: SortOrder
@@ -65664,6 +65801,7 @@ export namespace Prisma {
     cutoffDay?: SortOrder
     paymentDays?: SortOrder
     requiresPaper?: SortOrder
+    operativeNotes?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     deletedAt?: SortOrder
@@ -67007,6 +67145,13 @@ export namespace Prisma {
     connect?: RoleWhereUniqueInput | RoleWhereUniqueInput[]
   }
 
+  export type HealthInsurerCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<HealthInsurerCreateWithoutCompanyInput, HealthInsurerUncheckedCreateWithoutCompanyInput> | HealthInsurerCreateWithoutCompanyInput[] | HealthInsurerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: HealthInsurerCreateOrConnectWithoutCompanyInput | HealthInsurerCreateOrConnectWithoutCompanyInput[]
+    createMany?: HealthInsurerCreateManyCompanyInputEnvelope
+    connect?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+  }
+
   export type BranchUncheckedCreateNestedManyWithoutCompanyInput = {
     create?: XOR<BranchCreateWithoutCompanyInput, BranchUncheckedCreateWithoutCompanyInput> | BranchCreateWithoutCompanyInput[] | BranchUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutCompanyInput | BranchCreateOrConnectWithoutCompanyInput[]
@@ -67061,6 +67206,13 @@ export namespace Prisma {
     connectOrCreate?: RoleCreateOrConnectWithoutCompanyInput | RoleCreateOrConnectWithoutCompanyInput[]
     createMany?: RoleCreateManyCompanyInputEnvelope
     connect?: RoleWhereUniqueInput | RoleWhereUniqueInput[]
+  }
+
+  export type HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<HealthInsurerCreateWithoutCompanyInput, HealthInsurerUncheckedCreateWithoutCompanyInput> | HealthInsurerCreateWithoutCompanyInput[] | HealthInsurerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: HealthInsurerCreateOrConnectWithoutCompanyInput | HealthInsurerCreateOrConnectWithoutCompanyInput[]
+    createMany?: HealthInsurerCreateManyCompanyInputEnvelope
+    connect?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -67199,6 +67351,20 @@ export namespace Prisma {
     deleteMany?: RoleScalarWhereInput | RoleScalarWhereInput[]
   }
 
+  export type HealthInsurerUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<HealthInsurerCreateWithoutCompanyInput, HealthInsurerUncheckedCreateWithoutCompanyInput> | HealthInsurerCreateWithoutCompanyInput[] | HealthInsurerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: HealthInsurerCreateOrConnectWithoutCompanyInput | HealthInsurerCreateOrConnectWithoutCompanyInput[]
+    upsert?: HealthInsurerUpsertWithWhereUniqueWithoutCompanyInput | HealthInsurerUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: HealthInsurerCreateManyCompanyInputEnvelope
+    set?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+    disconnect?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+    delete?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+    connect?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+    update?: HealthInsurerUpdateWithWhereUniqueWithoutCompanyInput | HealthInsurerUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: HealthInsurerUpdateManyWithWhereWithoutCompanyInput | HealthInsurerUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: HealthInsurerScalarWhereInput | HealthInsurerScalarWhereInput[]
+  }
+
   export type BranchUncheckedUpdateManyWithoutCompanyNestedInput = {
     create?: XOR<BranchCreateWithoutCompanyInput, BranchUncheckedCreateWithoutCompanyInput> | BranchCreateWithoutCompanyInput[] | BranchUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutCompanyInput | BranchCreateOrConnectWithoutCompanyInput[]
@@ -67309,6 +67475,20 @@ export namespace Prisma {
     update?: RoleUpdateWithWhereUniqueWithoutCompanyInput | RoleUpdateWithWhereUniqueWithoutCompanyInput[]
     updateMany?: RoleUpdateManyWithWhereWithoutCompanyInput | RoleUpdateManyWithWhereWithoutCompanyInput[]
     deleteMany?: RoleScalarWhereInput | RoleScalarWhereInput[]
+  }
+
+  export type HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<HealthInsurerCreateWithoutCompanyInput, HealthInsurerUncheckedCreateWithoutCompanyInput> | HealthInsurerCreateWithoutCompanyInput[] | HealthInsurerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: HealthInsurerCreateOrConnectWithoutCompanyInput | HealthInsurerCreateOrConnectWithoutCompanyInput[]
+    upsert?: HealthInsurerUpsertWithWhereUniqueWithoutCompanyInput | HealthInsurerUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: HealthInsurerCreateManyCompanyInputEnvelope
+    set?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+    disconnect?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+    delete?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+    connect?: HealthInsurerWhereUniqueInput | HealthInsurerWhereUniqueInput[]
+    update?: HealthInsurerUpdateWithWhereUniqueWithoutCompanyInput | HealthInsurerUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: HealthInsurerUpdateManyWithWhereWithoutCompanyInput | HealthInsurerUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: HealthInsurerScalarWhereInput | HealthInsurerScalarWhereInput[]
   }
 
   export type CompanyCreateNestedOneWithoutBranchesInput = {
@@ -70133,6 +70313,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAttachmentsInput, UserUpdateWithoutAttachmentsInput>, UserUncheckedUpdateWithoutAttachmentsInput>
   }
 
+  export type CompanyCreateNestedOneWithoutHealthInsurersInput = {
+    create?: XOR<CompanyCreateWithoutHealthInsurersInput, CompanyUncheckedCreateWithoutHealthInsurersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutHealthInsurersInput
+    connect?: CompanyWhereUniqueInput
+  }
+
   export type InternmentCreateNestedManyWithoutHealthInsurerInput = {
     create?: XOR<InternmentCreateWithoutHealthInsurerInput, InternmentUncheckedCreateWithoutHealthInsurerInput> | InternmentCreateWithoutHealthInsurerInput[] | InternmentUncheckedCreateWithoutHealthInsurerInput[]
     connectOrCreate?: InternmentCreateOrConnectWithoutHealthInsurerInput | InternmentCreateOrConnectWithoutHealthInsurerInput[]
@@ -70237,6 +70423,14 @@ export namespace Prisma {
 
   export type EnumBillingModeFieldUpdateOperationsInput = {
     set?: $Enums.BillingMode
+  }
+
+  export type CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput = {
+    create?: XOR<CompanyCreateWithoutHealthInsurersInput, CompanyUncheckedCreateWithoutHealthInsurersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutHealthInsurersInput
+    upsert?: CompanyUpsertWithoutHealthInsurersInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutHealthInsurersInput, CompanyUpdateWithoutHealthInsurersInput>, CompanyUncheckedUpdateWithoutHealthInsurersInput>
   }
 
   export type InternmentUpdateManyWithoutHealthInsurerNestedInput = {
@@ -72968,6 +73162,66 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type HealthInsurerCreateWithoutCompanyInput = {
+    id?: string
+    name: string
+    acronym: string
+    cuit: string
+    rnos?: string | null
+    insurerType: $Enums.InsurerType
+    billingEmail?: string | null
+    billingMode: $Enums.BillingMode
+    cutoffDay?: number | null
+    paymentDays?: number | null
+    requiresPaper?: boolean
+    operativeNotes?: string | null
+    active?: boolean
+    createdAt?: Date | string
+    deletedAt?: Date | string | null
+    internments?: InternmentCreateNestedManyWithoutHealthInsurerInput
+    authorizations?: AuthorizationCreateNestedManyWithoutHealthInsurerInput
+    serviceRates?: InsurerServiceRateCreateNestedManyWithoutHealthInsurerInput
+    professionalLinks?: ProfessionalInsurerCreateNestedManyWithoutHealthInsurerInput
+    budgets?: BudgetCreateNestedManyWithoutHealthInsurerInput
+    billingBatches?: BillingBatchCreateNestedManyWithoutHealthInsurerInput
+    currentAccounts?: CurrentAccountCreateNestedManyWithoutHealthInsurerInput
+  }
+
+  export type HealthInsurerUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    name: string
+    acronym: string
+    cuit: string
+    rnos?: string | null
+    insurerType: $Enums.InsurerType
+    billingEmail?: string | null
+    billingMode: $Enums.BillingMode
+    cutoffDay?: number | null
+    paymentDays?: number | null
+    requiresPaper?: boolean
+    operativeNotes?: string | null
+    active?: boolean
+    createdAt?: Date | string
+    deletedAt?: Date | string | null
+    internments?: InternmentUncheckedCreateNestedManyWithoutHealthInsurerInput
+    authorizations?: AuthorizationUncheckedCreateNestedManyWithoutHealthInsurerInput
+    serviceRates?: InsurerServiceRateUncheckedCreateNestedManyWithoutHealthInsurerInput
+    professionalLinks?: ProfessionalInsurerUncheckedCreateNestedManyWithoutHealthInsurerInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutHealthInsurerInput
+    billingBatches?: BillingBatchUncheckedCreateNestedManyWithoutHealthInsurerInput
+    currentAccounts?: CurrentAccountUncheckedCreateNestedManyWithoutHealthInsurerInput
+  }
+
+  export type HealthInsurerCreateOrConnectWithoutCompanyInput = {
+    where: HealthInsurerWhereUniqueInput
+    create: XOR<HealthInsurerCreateWithoutCompanyInput, HealthInsurerUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type HealthInsurerCreateManyCompanyInputEnvelope = {
+    data: HealthInsurerCreateManyCompanyInput | HealthInsurerCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BranchUpsertWithWhereUniqueWithoutCompanyInput = {
     where: BranchWhereUniqueInput
     update: XOR<BranchUpdateWithoutCompanyInput, BranchUncheckedUpdateWithoutCompanyInput>
@@ -73237,6 +73491,44 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Role"> | Date | string
   }
 
+  export type HealthInsurerUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: HealthInsurerWhereUniqueInput
+    update: XOR<HealthInsurerUpdateWithoutCompanyInput, HealthInsurerUncheckedUpdateWithoutCompanyInput>
+    create: XOR<HealthInsurerCreateWithoutCompanyInput, HealthInsurerUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type HealthInsurerUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: HealthInsurerWhereUniqueInput
+    data: XOR<HealthInsurerUpdateWithoutCompanyInput, HealthInsurerUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type HealthInsurerUpdateManyWithWhereWithoutCompanyInput = {
+    where: HealthInsurerScalarWhereInput
+    data: XOR<HealthInsurerUpdateManyMutationInput, HealthInsurerUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type HealthInsurerScalarWhereInput = {
+    AND?: HealthInsurerScalarWhereInput | HealthInsurerScalarWhereInput[]
+    OR?: HealthInsurerScalarWhereInput[]
+    NOT?: HealthInsurerScalarWhereInput | HealthInsurerScalarWhereInput[]
+    id?: StringFilter<"HealthInsurer"> | string
+    companyId?: StringFilter<"HealthInsurer"> | string
+    name?: StringFilter<"HealthInsurer"> | string
+    acronym?: StringFilter<"HealthInsurer"> | string
+    cuit?: StringFilter<"HealthInsurer"> | string
+    rnos?: StringNullableFilter<"HealthInsurer"> | string | null
+    insurerType?: EnumInsurerTypeFilter<"HealthInsurer"> | $Enums.InsurerType
+    billingEmail?: StringNullableFilter<"HealthInsurer"> | string | null
+    billingMode?: EnumBillingModeFilter<"HealthInsurer"> | $Enums.BillingMode
+    cutoffDay?: IntNullableFilter<"HealthInsurer"> | number | null
+    paymentDays?: IntNullableFilter<"HealthInsurer"> | number | null
+    requiresPaper?: BoolFilter<"HealthInsurer"> | boolean
+    operativeNotes?: StringNullableFilter<"HealthInsurer"> | string | null
+    active?: BoolFilter<"HealthInsurer"> | boolean
+    createdAt?: DateTimeFilter<"HealthInsurer"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"HealthInsurer"> | Date | string | null
+  }
+
   export type CompanyCreateWithoutBranchesInput = {
     id?: string
     legalName: string
@@ -73262,6 +73554,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
     roles?: RoleCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutBranchesInput = {
@@ -73289,6 +73582,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
     roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutBranchesInput = {
@@ -73806,6 +74100,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
     roles?: RoleUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutBranchesInput = {
@@ -73833,6 +74128,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
     roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutBranchInput = {
@@ -74164,6 +74460,7 @@ export namespace Prisma {
     equipment?: EquipmentCreateNestedManyWithoutCompanyInput
     alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutRolesInput = {
@@ -74191,6 +74488,7 @@ export namespace Prisma {
     equipment?: EquipmentUncheckedCreateNestedManyWithoutCompanyInput
     alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutRolesInput = {
@@ -74318,6 +74616,7 @@ export namespace Prisma {
     equipment?: EquipmentUpdateManyWithoutCompanyNestedInput
     alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutRolesInput = {
@@ -74345,6 +74644,7 @@ export namespace Prisma {
     equipment?: EquipmentUncheckedUpdateManyWithoutCompanyNestedInput
     alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutRoleInput = {
@@ -74560,6 +74860,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
     roles?: RoleCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutUsersInput = {
@@ -74587,6 +74888,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
     roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutUsersInput = {
@@ -75200,6 +75502,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
     roles?: RoleUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutUsersInput = {
@@ -75227,6 +75530,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
     roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type BranchUpsertWithoutUsersInput = {
@@ -75848,6 +76152,7 @@ export namespace Prisma {
     equipment?: EquipmentCreateNestedManyWithoutCompanyInput
     alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
     roles?: RoleCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutAuditLogsInput = {
@@ -75875,6 +76180,7 @@ export namespace Prisma {
     equipment?: EquipmentUncheckedCreateNestedManyWithoutCompanyInput
     alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
     roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutAuditLogsInput = {
@@ -75981,6 +76287,7 @@ export namespace Prisma {
     equipment?: EquipmentUpdateManyWithoutCompanyNestedInput
     alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
     roles?: RoleUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutAuditLogsInput = {
@@ -76008,6 +76315,7 @@ export namespace Prisma {
     equipment?: EquipmentUncheckedUpdateManyWithoutCompanyNestedInput
     alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
     roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type BranchCreateWithoutPatientsInput = {
@@ -76950,6 +77258,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
     roles?: RoleCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutProfessionalsInput = {
@@ -76977,6 +77286,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
     roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutProfessionalsInput = {
@@ -77266,6 +77576,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
     roles?: RoleUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutProfessionalsInput = {
@@ -77293,6 +77604,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
     roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type ProfessionalInsurerUpsertWithWhereUniqueWithoutProfessionalInput = {
@@ -77559,9 +77871,11 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutHealthInsurersInput
     authorizations?: AuthorizationCreateNestedManyWithoutHealthInsurerInput
     serviceRates?: InsurerServiceRateCreateNestedManyWithoutHealthInsurerInput
     professionalLinks?: ProfessionalInsurerCreateNestedManyWithoutHealthInsurerInput
@@ -77572,6 +77886,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedCreateWithoutInternmentsInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -77582,6 +77897,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -78368,9 +78684,11 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput
     authorizations?: AuthorizationUpdateManyWithoutHealthInsurerNestedInput
     serviceRates?: InsurerServiceRateUpdateManyWithoutHealthInsurerNestedInput
     professionalLinks?: ProfessionalInsurerUpdateManyWithoutHealthInsurerNestedInput
@@ -78381,6 +78699,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateWithoutInternmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -78391,6 +78710,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78877,9 +79197,11 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutHealthInsurersInput
     internments?: InternmentCreateNestedManyWithoutHealthInsurerInput
     serviceRates?: InsurerServiceRateCreateNestedManyWithoutHealthInsurerInput
     professionalLinks?: ProfessionalInsurerCreateNestedManyWithoutHealthInsurerInput
@@ -78890,6 +79212,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedCreateWithoutAuthorizationsInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -78900,6 +79223,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -79066,9 +79390,11 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput
     internments?: InternmentUpdateManyWithoutHealthInsurerNestedInput
     serviceRates?: InsurerServiceRateUpdateManyWithoutHealthInsurerNestedInput
     professionalLinks?: ProfessionalInsurerUpdateManyWithoutHealthInsurerNestedInput
@@ -79079,6 +79405,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateWithoutAuthorizationsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -79089,6 +79416,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -81322,6 +81650,67 @@ export namespace Prisma {
     settlements?: SettlementUncheckedUpdateManyWithoutGeneratedByNestedInput
   }
 
+  export type CompanyCreateWithoutHealthInsurersInput = {
+    id?: string
+    legalName: string
+    tradeName?: string | null
+    cuit: string
+    vatCondition: $Enums.VATCondition
+    iibbNumber?: string | null
+    address: string
+    city: string
+    province: string
+    postalCode?: string | null
+    phone?: string | null
+    email?: string | null
+    website?: string | null
+    logoUrl?: string | null
+    active?: boolean
+    createdAt?: Date | string
+    deletedAt?: Date | string | null
+    branches?: BranchCreateNestedManyWithoutCompanyInput
+    users?: UserCreateNestedManyWithoutCompanyInput
+    professionals?: ProfessionalCreateNestedManyWithoutCompanyInput
+    supplies?: SupplyCreateNestedManyWithoutCompanyInput
+    equipment?: EquipmentCreateNestedManyWithoutCompanyInput
+    alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
+    roles?: RoleCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutHealthInsurersInput = {
+    id?: string
+    legalName: string
+    tradeName?: string | null
+    cuit: string
+    vatCondition: $Enums.VATCondition
+    iibbNumber?: string | null
+    address: string
+    city: string
+    province: string
+    postalCode?: string | null
+    phone?: string | null
+    email?: string | null
+    website?: string | null
+    logoUrl?: string | null
+    active?: boolean
+    createdAt?: Date | string
+    deletedAt?: Date | string | null
+    branches?: BranchUncheckedCreateNestedManyWithoutCompanyInput
+    users?: UserUncheckedCreateNestedManyWithoutCompanyInput
+    professionals?: ProfessionalUncheckedCreateNestedManyWithoutCompanyInput
+    supplies?: SupplyUncheckedCreateNestedManyWithoutCompanyInput
+    equipment?: EquipmentUncheckedCreateNestedManyWithoutCompanyInput
+    alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
+    roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutHealthInsurersInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutHealthInsurersInput, CompanyUncheckedCreateWithoutHealthInsurersInput>
+  }
+
   export type InternmentCreateWithoutHealthInsurerInput = {
     id?: string
     internmentType: $Enums.InternmentType
@@ -81626,6 +82015,73 @@ export namespace Prisma {
   export type CurrentAccountCreateManyHealthInsurerInputEnvelope = {
     data: CurrentAccountCreateManyHealthInsurerInput | CurrentAccountCreateManyHealthInsurerInput[]
     skipDuplicates?: boolean
+  }
+
+  export type CompanyUpsertWithoutHealthInsurersInput = {
+    update: XOR<CompanyUpdateWithoutHealthInsurersInput, CompanyUncheckedUpdateWithoutHealthInsurersInput>
+    create: XOR<CompanyCreateWithoutHealthInsurersInput, CompanyUncheckedCreateWithoutHealthInsurersInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutHealthInsurersInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutHealthInsurersInput, CompanyUncheckedUpdateWithoutHealthInsurersInput>
+  }
+
+  export type CompanyUpdateWithoutHealthInsurersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legalName?: StringFieldUpdateOperationsInput | string
+    tradeName?: NullableStringFieldUpdateOperationsInput | string | null
+    cuit?: StringFieldUpdateOperationsInput | string
+    vatCondition?: EnumVATConditionFieldUpdateOperationsInput | $Enums.VATCondition
+    iibbNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    province?: StringFieldUpdateOperationsInput | string
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    branches?: BranchUpdateManyWithoutCompanyNestedInput
+    users?: UserUpdateManyWithoutCompanyNestedInput
+    professionals?: ProfessionalUpdateManyWithoutCompanyNestedInput
+    supplies?: SupplyUpdateManyWithoutCompanyNestedInput
+    equipment?: EquipmentUpdateManyWithoutCompanyNestedInput
+    alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
+    roles?: RoleUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutHealthInsurersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    legalName?: StringFieldUpdateOperationsInput | string
+    tradeName?: NullableStringFieldUpdateOperationsInput | string | null
+    cuit?: StringFieldUpdateOperationsInput | string
+    vatCondition?: EnumVATConditionFieldUpdateOperationsInput | $Enums.VATCondition
+    iibbNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    province?: StringFieldUpdateOperationsInput | string
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    branches?: BranchUncheckedUpdateManyWithoutCompanyNestedInput
+    users?: UserUncheckedUpdateManyWithoutCompanyNestedInput
+    professionals?: ProfessionalUncheckedUpdateManyWithoutCompanyNestedInput
+    supplies?: SupplyUncheckedUpdateManyWithoutCompanyNestedInput
+    equipment?: EquipmentUncheckedUpdateManyWithoutCompanyNestedInput
+    alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
+    roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type InternmentUpsertWithWhereUniqueWithoutHealthInsurerInput = {
@@ -81935,9 +82391,11 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutHealthInsurersInput
     internments?: InternmentCreateNestedManyWithoutHealthInsurerInput
     authorizations?: AuthorizationCreateNestedManyWithoutHealthInsurerInput
     professionalLinks?: ProfessionalInsurerCreateNestedManyWithoutHealthInsurerInput
@@ -81948,6 +82406,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedCreateWithoutServiceRatesInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -81958,6 +82417,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -82030,9 +82490,11 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput
     internments?: InternmentUpdateManyWithoutHealthInsurerNestedInput
     authorizations?: AuthorizationUpdateManyWithoutHealthInsurerNestedInput
     professionalLinks?: ProfessionalInsurerUpdateManyWithoutHealthInsurerNestedInput
@@ -82043,6 +82505,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateWithoutServiceRatesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -82053,6 +82516,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -82186,9 +82650,11 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutHealthInsurersInput
     internments?: InternmentCreateNestedManyWithoutHealthInsurerInput
     authorizations?: AuthorizationCreateNestedManyWithoutHealthInsurerInput
     serviceRates?: InsurerServiceRateCreateNestedManyWithoutHealthInsurerInput
@@ -82199,6 +82665,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedCreateWithoutProfessionalLinksInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -82209,6 +82676,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -82325,9 +82793,11 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput
     internments?: InternmentUpdateManyWithoutHealthInsurerNestedInput
     authorizations?: AuthorizationUpdateManyWithoutHealthInsurerNestedInput
     serviceRates?: InsurerServiceRateUpdateManyWithoutHealthInsurerNestedInput
@@ -82338,6 +82808,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateWithoutProfessionalLinksInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -82348,6 +82819,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -82450,9 +82922,11 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutHealthInsurersInput
     internments?: InternmentCreateNestedManyWithoutHealthInsurerInput
     authorizations?: AuthorizationCreateNestedManyWithoutHealthInsurerInput
     serviceRates?: InsurerServiceRateCreateNestedManyWithoutHealthInsurerInput
@@ -82463,6 +82937,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedCreateWithoutBudgetsInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -82473,6 +82948,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -82690,9 +83166,11 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput
     internments?: InternmentUpdateManyWithoutHealthInsurerNestedInput
     authorizations?: AuthorizationUpdateManyWithoutHealthInsurerNestedInput
     serviceRates?: InsurerServiceRateUpdateManyWithoutHealthInsurerNestedInput
@@ -82703,6 +83181,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateWithoutBudgetsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -82713,6 +83192,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -83131,9 +83611,11 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutHealthInsurersInput
     internments?: InternmentCreateNestedManyWithoutHealthInsurerInput
     authorizations?: AuthorizationCreateNestedManyWithoutHealthInsurerInput
     serviceRates?: InsurerServiceRateCreateNestedManyWithoutHealthInsurerInput
@@ -83144,6 +83626,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedCreateWithoutBillingBatchesInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -83154,6 +83637,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -83371,9 +83855,11 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput
     internments?: InternmentUpdateManyWithoutHealthInsurerNestedInput
     authorizations?: AuthorizationUpdateManyWithoutHealthInsurerNestedInput
     serviceRates?: InsurerServiceRateUpdateManyWithoutHealthInsurerNestedInput
@@ -83384,6 +83870,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateWithoutBillingBatchesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -83394,6 +83881,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84432,9 +84920,11 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
+    company: CompanyCreateNestedOneWithoutHealthInsurersInput
     internments?: InternmentCreateNestedManyWithoutHealthInsurerInput
     authorizations?: AuthorizationCreateNestedManyWithoutHealthInsurerInput
     serviceRates?: InsurerServiceRateCreateNestedManyWithoutHealthInsurerInput
@@ -84445,6 +84935,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedCreateWithoutCurrentAccountsInput = {
     id?: string
+    companyId: string
     name: string
     acronym: string
     cuit: string
@@ -84455,6 +84946,7 @@ export namespace Prisma {
     cutoffDay?: number | null
     paymentDays?: number | null
     requiresPaper?: boolean
+    operativeNotes?: string | null
     active?: boolean
     createdAt?: Date | string
     deletedAt?: Date | string | null
@@ -84620,9 +85112,11 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    company?: CompanyUpdateOneRequiredWithoutHealthInsurersNestedInput
     internments?: InternmentUpdateManyWithoutHealthInsurerNestedInput
     authorizations?: AuthorizationUpdateManyWithoutHealthInsurerNestedInput
     serviceRates?: InsurerServiceRateUpdateManyWithoutHealthInsurerNestedInput
@@ -84633,6 +85127,7 @@ export namespace Prisma {
 
   export type HealthInsurerUncheckedUpdateWithoutCurrentAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     acronym?: StringFieldUpdateOperationsInput | string
     cuit?: StringFieldUpdateOperationsInput | string
@@ -84643,6 +85138,7 @@ export namespace Prisma {
     cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
     paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
     requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84726,6 +85222,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
     roles?: RoleCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutSuppliesInput = {
@@ -84753,6 +85250,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
     roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutSuppliesInput = {
@@ -84914,6 +85412,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
     roles?: RoleUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutSuppliesInput = {
@@ -84941,6 +85440,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
     roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type BranchStockUpsertWithWhereUniqueWithoutSupplyInput = {
@@ -86245,6 +86745,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
     roles?: RoleCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutEquipmentInput = {
@@ -86272,6 +86773,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
     roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutEquipmentInput = {
@@ -86430,6 +86932,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
     roles?: RoleUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutEquipmentInput = {
@@ -86457,6 +86960,7 @@ export namespace Prisma {
     alertConfigs?: AlertConfigUncheckedUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
     roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type BranchUpsertWithoutEquipmentInput = {
@@ -87213,6 +87717,7 @@ export namespace Prisma {
     equipment?: EquipmentCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
     roles?: RoleCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutAlertConfigsInput = {
@@ -87240,6 +87745,7 @@ export namespace Prisma {
     equipment?: EquipmentUncheckedCreateNestedManyWithoutCompanyInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
     roles?: RoleUncheckedCreateNestedManyWithoutCompanyInput
+    healthInsurers?: HealthInsurerUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyCreateOrConnectWithoutAlertConfigsInput = {
@@ -87330,6 +87836,7 @@ export namespace Prisma {
     equipment?: EquipmentUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
     roles?: RoleUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutAlertConfigsInput = {
@@ -87357,6 +87864,7 @@ export namespace Prisma {
     equipment?: EquipmentUncheckedUpdateManyWithoutCompanyNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
     roles?: RoleUncheckedUpdateManyWithoutCompanyNestedInput
+    healthInsurers?: HealthInsurerUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type BranchUpsertWithoutAlertConfigsInput = {
@@ -87519,6 +88027,24 @@ export namespace Prisma {
     isSystem?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type HealthInsurerCreateManyCompanyInput = {
+    id?: string
+    name: string
+    acronym: string
+    cuit: string
+    rnos?: string | null
+    insurerType: $Enums.InsurerType
+    billingEmail?: string | null
+    billingMode: $Enums.BillingMode
+    cutoffDay?: number | null
+    paymentDays?: number | null
+    requiresPaper?: boolean
+    operativeNotes?: string | null
+    active?: boolean
+    createdAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type BranchUpdateWithoutCompanyInput = {
@@ -87918,6 +88444,74 @@ export namespace Prisma {
     isSystem?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HealthInsurerUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    acronym?: StringFieldUpdateOperationsInput | string
+    cuit?: StringFieldUpdateOperationsInput | string
+    rnos?: NullableStringFieldUpdateOperationsInput | string | null
+    insurerType?: EnumInsurerTypeFieldUpdateOperationsInput | $Enums.InsurerType
+    billingEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    billingMode?: EnumBillingModeFieldUpdateOperationsInput | $Enums.BillingMode
+    cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
+    requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internments?: InternmentUpdateManyWithoutHealthInsurerNestedInput
+    authorizations?: AuthorizationUpdateManyWithoutHealthInsurerNestedInput
+    serviceRates?: InsurerServiceRateUpdateManyWithoutHealthInsurerNestedInput
+    professionalLinks?: ProfessionalInsurerUpdateManyWithoutHealthInsurerNestedInput
+    budgets?: BudgetUpdateManyWithoutHealthInsurerNestedInput
+    billingBatches?: BillingBatchUpdateManyWithoutHealthInsurerNestedInput
+    currentAccounts?: CurrentAccountUpdateManyWithoutHealthInsurerNestedInput
+  }
+
+  export type HealthInsurerUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    acronym?: StringFieldUpdateOperationsInput | string
+    cuit?: StringFieldUpdateOperationsInput | string
+    rnos?: NullableStringFieldUpdateOperationsInput | string | null
+    insurerType?: EnumInsurerTypeFieldUpdateOperationsInput | $Enums.InsurerType
+    billingEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    billingMode?: EnumBillingModeFieldUpdateOperationsInput | $Enums.BillingMode
+    cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
+    requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internments?: InternmentUncheckedUpdateManyWithoutHealthInsurerNestedInput
+    authorizations?: AuthorizationUncheckedUpdateManyWithoutHealthInsurerNestedInput
+    serviceRates?: InsurerServiceRateUncheckedUpdateManyWithoutHealthInsurerNestedInput
+    professionalLinks?: ProfessionalInsurerUncheckedUpdateManyWithoutHealthInsurerNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutHealthInsurerNestedInput
+    billingBatches?: BillingBatchUncheckedUpdateManyWithoutHealthInsurerNestedInput
+    currentAccounts?: CurrentAccountUncheckedUpdateManyWithoutHealthInsurerNestedInput
+  }
+
+  export type HealthInsurerUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    acronym?: StringFieldUpdateOperationsInput | string
+    cuit?: StringFieldUpdateOperationsInput | string
+    rnos?: NullableStringFieldUpdateOperationsInput | string | null
+    insurerType?: EnumInsurerTypeFieldUpdateOperationsInput | $Enums.InsurerType
+    billingEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    billingMode?: EnumBillingModeFieldUpdateOperationsInput | $Enums.BillingMode
+    cutoffDay?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentDays?: NullableIntFieldUpdateOperationsInput | number | null
+    requiresPaper?: BoolFieldUpdateOperationsInput | boolean
+    operativeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserCreateManyBranchInput = {

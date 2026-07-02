@@ -86,6 +86,105 @@ async function main(): Promise<void> {
     },
   })
 
+  // Health insurers de ejemplo
+  const healthInsurers = [
+    {
+      name:           'Instituto Obra Médico Asistencial',
+      acronym:        'IOMA',
+      cuit:           '30-52843970-8',
+      rnos:           '800001',
+      insurerType:    'PROVINCIAL_INSURANCE' as const,
+      billingEmail:   'prestaciones@ioma.gba.gov.ar',
+      billingMode:    'PER_VISIT' as const,
+      cutoffDay:      15,
+      paymentDays:    30,
+      requiresPaper:  false,
+      operativeNotes: `IOMA - Normas operativas:
+- Autorización previa obligatoria para toda internación domiciliaria
+- Presentar formulario de solicitud de internación con firma del médico auditor
+- Renovación de autorización cada 90 días con nueva evaluación médica
+- Facturación: presentar entre los días 1 y 15 de cada mes para el período anterior
+- Documentación requerida: evoluciones médicas, enfermería y kinesiólogía originales
+- Auditoría in situ puede ocurrir sin previo aviso
+- Contacto auditoría: auditoria@ioma.gba.gov.ar | Tel: 0800-222-4662
+- No acepta fotocopias — toda documentación debe ser original con firma y sello`,
+    },
+    {
+      name:           'Programa de Atención Médica Integral',
+      acronym:        'PAMI',
+      cuit:           '30-61898226-0',
+      rnos:           '800011',
+      insurerType:    'NATIONAL_INSURANCE' as const,
+      billingEmail:   'prestaciones@pami.org.ar',
+      billingMode:    'MIXED' as const,
+      cutoffDay:      20,
+      paymentDays:    45,
+      requiresPaper:  true,
+      operativeNotes: `PAMI - Normas operativas:
+- Requiere resolución de autorización antes de iniciar la internación
+- Módulo diario incluye: enfermería, kinesiología y médico (según plan)
+- Presentar remitos firmados por familiar o responsable legal del afiliado
+- Facturación en papel obligatoria — no acepta presentación digital
+- Corte el día 20 de cada mes — presentar entre días 21 y 25
+- Plazo de pago: 45 días hábiles desde la aprobación
+- Auditor asignado rota mensualmente — consultar delegación zonal
+- Afiliados deben tener credencial vigente al momento de la prestación
+- Contacto local: delegacion.laplata@pami.org.ar`,
+    },
+    {
+      name:           'Swiss Medical Group',
+      acronym:        'SWISS',
+      cuit:           '30-57411040-7',
+      rnos:           '110500',
+      insurerType:    'PREPAID' as const,
+      billingEmail:   'internaciondomiciliaria@swissmedical.com.ar',
+      billingMode:    'PER_VISIT' as const,
+      cutoffDay:      10,
+      paymentDays:    21,
+      requiresPaper:  false,
+      operativeNotes: `Swiss Medical - Normas operativas:
+- Portal de autorizaciones: providers.swissmedical.com.ar
+- Autorización online — respuesta en 48hs hábiles
+- Facturación electrónica obligatoria a través del portal
+- Cada visita debe registrarse en el sistema antes de las 24hs de realizada
+- Geolocalización obligatoria para profesionales al momento de la visita
+- Corte el día 10 de cada mes — pago a los 21 días hábiles
+- Auditoría remota mensual — enviar evoluciones escaneadas vía portal
+- Aumentos de arancel se notifican con 30 días de anticipación
+- Contacto coordinación: 0810-888-7947 int. 3 (lunes a viernes 8-18hs)`,
+    },
+  ]
+
+  for (const insurer of healthInsurers) {
+    await prisma.healthInsurer.upsert({
+      where:  { companyId_cuit: { companyId: company.id, cuit: insurer.cuit } },
+      update: {},
+      create: { ...insurer, companyId: company.id, active: true },
+    })
+  }
+  console.log('✓ Health insurers creados: IOMA, PAMI, Swiss Medical')
+
+  // Catálogo base de prestaciones (ServiceItems — globales, sin companyId)
+  const serviceItems = [
+    { specialty: 'NURSING' as const,       code: 'ENF-01', description: 'Visita de enfermería domiciliaria',      billingMode: 'PER_VISIT' as const,    basePrice: 2000 },
+    { specialty: 'NURSING' as const,       code: 'ENF-02', description: 'Módulo diario de enfermería',            billingMode: 'DAILY_MODULE' as const, basePrice: 12000 },
+    { specialty: 'PHYSIOTHERAPY' as const, code: 'KIN-01', description: 'Sesión de kinesiología domiciliaria',    billingMode: 'PER_VISIT' as const,    basePrice: 2400 },
+    { specialty: 'MEDICINE' as const,      code: 'MED-01', description: 'Visita médica domiciliaria',             billingMode: 'PER_VISIT' as const,    basePrice: 3500 },
+    { specialty: 'NUTRITION' as const,     code: 'NUT-01', description: 'Consulta nutricional domiciliaria',      billingMode: 'PER_VISIT' as const,    basePrice: 2500 },
+    { specialty: 'PSYCHOLOGY' as const,    code: 'PSI-01', description: 'Sesión de psicología domiciliaria',      billingMode: 'PER_VISIT' as const,    basePrice: 2800 },
+    { specialty: 'SOCIAL_WORK' as const,   code: 'TS-01',  description: 'Visita de trabajo social',               billingMode: 'PER_VISIT' as const,    basePrice: 2200 },
+    { specialty: 'CAREGIVER' as const,     code: 'CUI-01', description: 'Módulo diario de cuidador domiciliario', billingMode: 'DAILY_MODULE' as const, basePrice: 9000 },
+  ]
+
+  for (const item of serviceItems) {
+    await prisma.serviceItem.upsert({
+      where:  { code: item.code },
+      update: {},
+      create: { ...item, active: true },
+    })
+  }
+  console.log(`✓ ${serviceItems.length} prestaciones del catálogo base creadas`)
+
   console.log('✅ Seed completo — admin@homecare.com / Admin123!')
 }
 

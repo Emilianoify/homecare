@@ -261,14 +261,15 @@ model Company {
   createdAt    DateTime     @default(now())
   deletedAt    DateTime?
 
-  branches      Branch[]
-  users         User[]
-  professionals Professional[]
-  supplies      Supply[]
-  equipment     Equipment[]
-  alertConfigs  AlertConfig[]
-  auditLogs     AuditLog[]
-  roles         Role[]
+  branches       Branch[]
+  users          User[]
+  professionals  Professional[]
+  supplies       Supply[]
+  equipment      Equipment[]
+  alertConfigs   AlertConfig[]
+  auditLogs      AuditLog[]
+  roles          Role[]
+  healthInsurers HealthInsurer[]
 
   @@map("companies")
 }
@@ -721,21 +722,24 @@ model Attachment {
 }
 
 model HealthInsurer {
-  id            String      @id @default(uuid())
-  name          String
-  acronym       String
-  cuit          String      @unique
-  rnos          String?
-  insurerType   InsurerType
-  billingEmail  String?
-  billingMode   BillingMode
-  cutoffDay     Int?
-  paymentDays   Int?
-  requiresPaper Boolean     @default(false)
-  active        Boolean     @default(true)
-  createdAt     DateTime    @default(now())
-  deletedAt     DateTime?
+  id             String      @id @default(uuid())
+  companyId      String
+  name           String
+  acronym        String
+  cuit           String
+  rnos           String?
+  insurerType    InsurerType
+  billingEmail   String?
+  billingMode    BillingMode
+  cutoffDay      Int?
+  paymentDays    Int?
+  requiresPaper  Boolean     @default(false)
+  operativeNotes String?
+  active         Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  deletedAt      DateTime?
 
+  company           Company               @relation(fields: [companyId], references: [id])
   internments       Internment[]
   authorizations    Authorization[]
   serviceRates      InsurerServiceRate[]
@@ -744,6 +748,7 @@ model HealthInsurer {
   billingBatches    BillingBatch[]
   currentAccounts   CurrentAccount[]
 
+  @@unique([companyId, cuit])
   @@map("health_insurers")
 }
 

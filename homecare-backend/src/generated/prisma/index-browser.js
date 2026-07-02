@@ -437,6 +437,7 @@ exports.Prisma.AttachmentScalarFieldEnum = {
 
 exports.Prisma.HealthInsurerScalarFieldEnum = {
   id: 'id',
+  companyId: 'companyId',
   name: 'name',
   acronym: 'acronym',
   cuit: 'cuit',
@@ -447,6 +448,7 @@ exports.Prisma.HealthInsurerScalarFieldEnum = {
   cutoffDay: 'cutoffDay',
   paymentDays: 'paymentDays',
   requiresPaper: 'requiresPaper',
+  operativeNotes: 'operativeNotes',
   active: 'active',
   createdAt: 'createdAt',
   deletedAt: 'deletedAt'
