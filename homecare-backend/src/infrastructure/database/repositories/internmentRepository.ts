@@ -61,4 +61,14 @@ export class InternmentRepository implements IInternmentRepository {
       data:  { deletedAt: new Date() },
     })
   }
+
+  async findVisitByIdAndInternment(
+    visitId:      string,
+    internmentId: string
+  ): Promise<{ id: string } | null> {
+    return prisma.visit.findFirst({
+      where:  { id: visitId, internmentId },
+      select: { id: true },
+    })
+  }
 }

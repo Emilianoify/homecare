@@ -17,4 +17,5 @@ export interface IInternmentRepository {
   create(data: Omit<InternmentEntity, 'id' | 'createdAt' | 'deletedAt'>): Promise<InternmentEntity>
   update(id: string, data: Partial<Omit<InternmentEntity, 'id' | 'createdAt' | 'deletedAt'>>): Promise<InternmentEntity>
   softDelete(id: string): Promise<void>
+  findVisitByIdAndInternment(visitId: string, internmentId: string): Promise<{ id: string } | null>
 }

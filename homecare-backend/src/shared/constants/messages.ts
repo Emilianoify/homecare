@@ -45,6 +45,13 @@ export const ERROR_MESSAGES = {
     NOT_FOUND:   'Prestación no encontrada',
     CODE_EXISTS: 'El código de prestación ya existe',
   },
+  CLINICAL_NOTE: {
+    NOT_FOUND:         'Nota clínica no encontrada',
+    VISIT_REQUIRED:    'La nota clínica debe estar asociada a una visita',
+    VISIT_NOT_FOUND:   'La visita no pertenece a esta internación',
+    VISIT_HAS_NOTE:    'La visita ya tiene una nota clínica registrada',
+    ALREADY_SIGNED:    'La nota clínica ya está firmada y no puede modificarse',
+  },
   GENERAL: {
     VALIDATION_ERROR: 'Datos inválidos',
     FORBIDDEN:        'Acceso denegado',
@@ -123,5 +130,11 @@ export const SUCCESS_MESSAGES = {
     LIST:    'Prestaciones obtenidas exitosamente',
     UPDATED: 'Prestación actualizada exitosamente',
     DELETED: 'Prestación eliminada exitosamente',
+  },
+  CLINICAL_NOTE: {
+    CREATED: 'Nota clínica registrada exitosamente',
+    FOUND:   'Nota clínica obtenida exitosamente',
+    LIST:    'Notas clínicas obtenidas exitosamente',
+    SIGNED:  'Nota clínica firmada exitosamente',
   },
 } as const

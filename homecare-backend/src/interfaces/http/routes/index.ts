@@ -9,6 +9,7 @@ import { branchRouter }            from './branchRoutes.js'
 import { userRouter }              from './userRoutes.js'
 import { healthInsurerRouter }     from './healthInsurerRoutes.js'
 import { serviceItemRouter }      from './serviceItemRoutes.js'
+import { clinicalNoteRouter }     from './clinicalNoteRoutes.js'
 
 const router = Router()
 
@@ -18,6 +19,7 @@ router.use('/patients/:patientId/contacts',          patientContactRouter)
 router.use('/patients/:patientId/functional-status', functionalStatusRouter)
 router.use('/professionals',                         professionalRouter)
 router.use('/internments',                           internmentRouter)
+router.use('/internments/:internmentId/clinical-notes', clinicalNoteRouter)
 router.use('/branches',                              branchRouter)
 router.use('/users',                                 userRouter)
 router.use('/health-insurers',                       healthInsurerRouter)
