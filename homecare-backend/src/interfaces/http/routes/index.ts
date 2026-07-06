@@ -9,18 +9,20 @@ import { branchRouter }            from './branchRoutes.js'
 import { userRouter }              from './userRoutes.js'
 import { healthInsurerRouter }     from './healthInsurerRoutes.js'
 import { serviceItemRouter }      from './serviceItemRoutes.js'
+import { insurerRateRouter }      from './insurerRateRoutes.js'
 
 const router = Router()
 
-router.use('/auth',                                  authRouter)
-router.use('/patients',                              patientRouter)
-router.use('/patients/:patientId/contacts',          patientContactRouter)
-router.use('/patients/:patientId/functional-status', functionalStatusRouter)
-router.use('/professionals',                         professionalRouter)
-router.use('/internments',                           internmentRouter)
-router.use('/branches',                              branchRouter)
-router.use('/users',                                 userRouter)
-router.use('/health-insurers',                       healthInsurerRouter)
-router.use('/service-items',                         serviceItemRouter)
+router.use('/auth',                                              authRouter)
+router.use('/patients',                                          patientRouter)
+router.use('/patients/:patientId/contacts',                      patientContactRouter)
+router.use('/patients/:patientId/functional-status',             functionalStatusRouter)
+router.use('/professionals',                                     professionalRouter)
+router.use('/internments',                                       internmentRouter)
+router.use('/branches',                                          branchRouter)
+router.use('/users',                                             userRouter)
+router.use('/health-insurers',                                   healthInsurerRouter)
+router.use('/health-insurers/:healthInsurerId/rates',            insurerRateRouter)
+router.use('/service-items',                                     serviceItemRouter)
 
 export { router as apiRouter }

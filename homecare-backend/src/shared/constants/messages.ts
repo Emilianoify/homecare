@@ -45,6 +45,10 @@ export const ERROR_MESSAGES = {
     NOT_FOUND:   'Prestación no encontrada',
     CODE_EXISTS: 'El código de prestación ya existe',
   },
+  INSURER_RATE: {
+    NOT_FOUND:      'Arancel no encontrado',
+    ALREADY_EXISTS: 'Ya existe un arancel para esta prestación en ese período',
+  },
   GENERAL: {
     VALIDATION_ERROR: 'Datos inválidos',
     FORBIDDEN:        'Acceso denegado',
@@ -123,5 +127,11 @@ export const SUCCESS_MESSAGES = {
     LIST:    'Prestaciones obtenidas exitosamente',
     UPDATED: 'Prestación actualizada exitosamente',
     DELETED: 'Prestación eliminada exitosamente',
+  },
+  INSURER_RATE: {
+    CREATED: 'Arancel creado exitosamente',
+    LIST:    'Aranceles obtenidos exitosamente',
+    UPDATED: 'Arancel actualizado exitosamente',
+    DELETED: 'Arancel eliminado exitosamente',
   },
 } as const

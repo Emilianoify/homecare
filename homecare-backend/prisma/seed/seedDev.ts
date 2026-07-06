@@ -185,6 +185,46 @@ async function main(): Promise<void> {
   }
   console.log(`✓ ${serviceItems.length} prestaciones del catálogo base creadas`)
 
+  // Tarifas de IOMA para las prestaciones del catálogo
+  const ioma = await prisma.healthInsurer.findFirst({
+    where: { companyId: company.id, acronym: 'IOMA' },
+  })
+
+  if (ioma) {
+    const enf01 = await prisma.serviceItem.findFirst({ where: { code: 'ENF-01' } })
+    const kin01 = await prisma.serviceItem.findFirst({ where: { code: 'KIN-01' } })
+    const med01 = await prisma.serviceItem.findFirst({ where: { code: 'MED-01' } })
+
+    const iomaTarifas = [
+      { serviceItemId: enf01?.id, agreedPrice: 1800, validFrom: new Date('2025-01-01') },
+      { serviceItemId: kin01?.id, agreedPrice: 2100, validFrom: new Date('2025-01-01') },
+      { serviceItemId: med01?.id, agreedPrice: 3200, validFrom: new Date('2025-01-01') },
+    ]
+
+    for (const tarifa of iomaTarifas) {
+      if (!tarifa.serviceItemId) continue
+      await prisma.insurerServiceRate.upsert({
+        where: {
+          healthInsurerId_serviceItemId_validFrom: {
+            healthInsurerId: ioma.id,
+            serviceItemId:   tarifa.serviceItemId,
+            validFrom:       tarifa.validFrom,
+          },
+        },
+        update: {},
+        create: {
+          healthInsurerId: ioma.id,
+          serviceItemId:   tarifa.serviceItemId,
+          agreedPrice:     tarifa.agreedPrice,
+          validFrom:       tarifa.validFrom,
+          validTo:         null,
+          active:          true,
+        },
+      })
+    }
+    console.log('✓ Tarifas IOMA creadas: ENF-01, KIN-01, MED-01')
+  }
+
   console.log('✅ Seed completo — admin@homecare.com / Admin123!')
 }
 
