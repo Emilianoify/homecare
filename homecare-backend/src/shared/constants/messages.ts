@@ -72,6 +72,11 @@ export const ERROR_MESSAGES = {
     PRIMARY_EXISTS:  'Ya existe un diagnóstico primario activo para esta internación',
     VALIDATION_ERROR:'Datos de diagnóstico inválidos',
   },
+  MEDICATION: {
+    NOT_FOUND:            'Medicación no encontrada',
+    ALREADY_DISCONTINUED: 'La medicación ya fue discontinuada',
+    VALIDATION_ERROR:     'Datos de medicación inválidos',
+  },
   GENERAL: {
     VALIDATION_ERROR: 'Datos inválidos',
     FORBIDDEN:        'Acceso denegado',
@@ -166,5 +171,11 @@ export const SUCCESS_MESSAGES = {
     CREATED: 'Diagnóstico registrado exitosamente',
     LIST:    'Diagnósticos obtenidos exitosamente',
     UPDATED: 'Diagnóstico actualizado exitosamente',
+  },
+  MEDICATION: {
+    CREATED:       'Medicación registrada exitosamente',
+    LIST:          'Medicaciones obtenidas exitosamente',
+    UPDATED:       'Medicación actualizada exitosamente',
+    DISCONTINUED:  'Medicación discontinuada exitosamente',
   },
 } as const
