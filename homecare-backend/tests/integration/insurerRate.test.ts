@@ -16,6 +16,10 @@ describe('InsurerRate Endpoints Integration Tests', () => {
   let otherCompanyId: string
 
   beforeAll(async () => {
+    // Clean up any leaked test data from previous runs
+    await prisma.healthInsurer.deleteMany({ where: { cuit: '30-57411047-9' } })
+    await prisma.company.deleteMany({ where: { cuit: '33-99999997-9' } })
+
     // 1. Log in as the seeded admin to get the session cookie
     const loginRes = await request(app)
       .post('/api/auth/login')
@@ -53,7 +57,7 @@ describe('InsurerRate Endpoints Integration Tests', () => {
     const otherCompany = await prisma.company.create({
       data: {
         legalName:    'Other Company S.A. Rates',
-        cuit:         '33-99999999-9',
+        cuit:         '33-99999997-9',
         vatCondition: 'REGISTERED_TAXPAYER',
         address:      'Calle 2 123',
         city:         'La Plata',
@@ -67,7 +71,7 @@ describe('InsurerRate Endpoints Integration Tests', () => {
         companyId:      otherCompanyId,
         name:           'Other Swiss Medical Group',
         acronym:        'OTH-SWISS',
-        cuit:           '30-57411040-9',
+        cuit:           '30-57411047-9',
         insurerType:    'PREPAID',
         billingMode:    'PER_VISIT',
         active:         true,

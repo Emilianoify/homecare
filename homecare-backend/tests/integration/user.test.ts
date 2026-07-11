@@ -17,6 +17,10 @@ describe('User Endpoints Integration Tests', () => {
   let testRoleId: string
 
   beforeAll(async () => {
+    // Clean up any leaked test data from previous runs
+    await prisma.user.deleteMany({ where: { email: 'isolated@othercompany.com' } })
+    await prisma.company.deleteMany({ where: { cuit: '33-99999991-9' } })
+
     // 1. Log in as the seeded admin to get the session cookie
     const loginRes = await request(app)
       .post('/api/auth/login')

@@ -1,43 +1,46 @@
 import { z } from 'zod'
+import { InternmentType, AdmissionMode, InternmentStatus } from '../../../generated/prisma/enums.js'
+import { ERROR_MESSAGES } from '../../../shared/constants/messages.js'
 
-const uuidSchema = z.string().uuid('UUID inválido')
+const V  = ERROR_MESSAGES.INTERNMENT.VALIDATION_ERROR
+const GV = ERROR_MESSAGES.GENERAL.VALIDATION_ERROR
 
 export const createInternmentSchema = z.object({
-  patientId:                  uuidSchema,
-  branchId:                   uuidSchema,
-  healthInsurerId:            uuidSchema,
-  responsibleDoctorId:        uuidSchema,
-  internmentType:             z.enum(['ACUTE', 'SUBACUTE', 'CHRONIC', 'COMPLEX_CHRONIC', 'PALLIATIVE_CARE']),
-  admissionMode:              z.enum(['HOSPITAL_DISCHARGE', 'FROM_HOME']),
-  admissionDate:              z.iso.date(),
-  mainDiagnosis:              z.string().min(3),
-  cie10Code:                  z.string().min(3).max(10),
+  patientId:                  z.uuid({ error: V }),
+  branchId:                   z.uuid({ error: V }),
+  healthInsurerId:            z.uuid({ error: V }),
+  responsibleDoctorId:        z.uuid({ error: V }),
+  internmentType:             z.enum(InternmentType,  { error: V }),
+  admissionMode:              z.enum(AdmissionMode,   { error: V }),
+  admissionDate:              z.iso.date({ error: V }),
+  mainDiagnosis:              z.string().min(3, { error: V }),
+  cie10Code:                  z.string().min(3, { error: V }).max(10, { error: V }),
   referenceHospital:          z.string().optional(),
   omeRequestedBy:             z.string().optional(),
-  omeDate:                    z.iso.date().optional(),
+  omeDate:                    z.iso.date({ error: V }).optional(),
   medicalFamilyAgreement:     z.boolean().default(false),
-  medicalFamilyAgreementDate: z.iso.date().optional(),
+  medicalFamilyAgreementDate: z.iso.date({ error: V }).optional(),
   notes:                      z.string().optional(),
 })
 
 export const updateInternmentSchema = createInternmentSchema.partial()
 
 export const dischargeInternmentSchema = z.object({
-  dischargeDate:   z.iso.date(),
-  dischargeReason: z.string().min(3),
+  dischargeDate:   z.iso.date({ error: V }),
+  dischargeReason: z.string().min(3, { error: V }),
 })
 
 export const internmentParamsSchema = z.object({
-  id: uuidSchema,
+  id: z.uuid({ error: GV }),
 })
 
 export const internmentQuerySchema = z.object({
-  page:            z.string().transform(Number).pipe(z.number().int().positive()).default(1),
-  limit:           z.string().transform(Number).pipe(z.number().int().min(1).max(100)).default(20),
-  status:          z.enum(['ACTIVE', 'SUSPENDED', 'DISCHARGED', 'CANCELLED', 'all']).default('all'),
-  patientId:       uuidSchema.optional(),
-  healthInsurerId: uuidSchema.optional(),
-  branchId:        uuidSchema.optional(),
+  page:            z.coerce.number().int().positive().default(1),
+  limit:           z.coerce.number().int().min(1).max(100).default(20),
+  status:          z.enum([...Object.values(InternmentStatus), 'all'] as unknown as [string, ...string[]]).default('all'),
+  patientId:       z.uuid({ error: GV }).optional(),
+  healthInsurerId: z.uuid({ error: GV }).optional(),
+  branchId:        z.uuid({ error: GV }).optional(),
 })
 
 export type CreateInternmentDto    = z.infer<typeof createInternmentSchema>

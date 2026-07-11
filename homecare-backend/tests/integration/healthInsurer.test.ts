@@ -13,6 +13,10 @@ describe('HealthInsurer Endpoints Integration Tests', () => {
   let otherCompanyId: string
 
   beforeAll(async () => {
+    // Clean up any leaked test data from previous runs
+    await prisma.healthInsurer.deleteMany({ where: { cuit: '30-57411040-2' } })
+    await prisma.company.deleteMany({ where: { cuit: '33-88888888-9' } })
+
     // 1. Log in as the seeded admin to get the session cookie
     const loginRes = await request(app)
       .post('/api/auth/login')

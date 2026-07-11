@@ -2,7 +2,7 @@ import { prisma } from '../prismaClient.js'
 import type { IHealthInsurerRepository, HealthInsurerFilters } from '../../../domain/repositories/iHealthInsurerRepository.js'
 import type { HealthInsurerEntity } from '../../../domain/entities/healthInsurerEntity.js'
 import type { PaginatedResult } from '../../../domain/repositories/iPaginatedResult.js'
-import { InsurerType, BillingMode } from '../../../generated/prisma/index.js'
+import { InsurerType, BillingMode } from '../../../generated/prisma/client.js'
 
 export class HealthInsurerRepository implements IHealthInsurerRepository {
   async findAll({ companyId, page, limit, search, insurerType, active }: HealthInsurerFilters): Promise<PaginatedResult<HealthInsurerEntity>> {

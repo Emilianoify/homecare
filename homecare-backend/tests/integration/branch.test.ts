@@ -13,6 +13,9 @@ describe('Branch Endpoints Integration Tests', () => {
   let otherCompanyId: string
 
   beforeAll(async () => {
+    // Clean up any leaked test data from previous runs
+    await prisma.company.deleteMany({ where: { cuit: '33-99999999-9' } })
+
     // 1. Log in as the seeded admin to get the session cookie
     const loginRes = await request(app)
       .post('/api/auth/login')
