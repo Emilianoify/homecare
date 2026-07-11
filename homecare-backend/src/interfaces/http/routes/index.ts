@@ -13,6 +13,8 @@ import { insurerRateRouter } from './insurerRateRoutes.js'
 import { clinicalNoteRouter } from './clinicalNoteRoutes.js'
 import { diagnosisRouter } from './diagnosisRoutes.js'
 import { medicationRouter } from './medicationRoutes.js'
+import { authorizationRouter } from './authorizationRoutes.js'
+import { carePlanRouter } from './carePlanRoutes.js'
 
 const router = Router()
 
@@ -30,5 +32,7 @@ router.use('/service-items', serviceItemRouter)
 router.use('/internments/:internmentId/clinical-notes', clinicalNoteRouter)
 router.use('/internments/:internmentId/diagnoses', diagnosisRouter)
 router.use('/internments/:internmentId/medications', medicationRouter)
+router.use('/internments/:internmentId/authorizations', authorizationRouter)
+router.use('/internments/:internmentId/care-plans', carePlanRouter)
 
 export { router as apiRouter }

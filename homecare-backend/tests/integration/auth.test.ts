@@ -17,17 +17,17 @@ describe('POST /api/auth/login', () => {
   it('200 con credenciales válidas', async () => {
     const res = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'admin@homecare.com', password: 'Admin123!' })
+      .send({ email: process.env['SEED_ADMIN_EMAIL'] || 'admin@homecare.com', password: process.env['SEED_ADMIN_PASSWORD'] || 'Admin123!' })
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
-    expect(res.body.data.email).toBe('admin@homecare.com')
+    expect(res.body.data.email).toBe(process.env['SEED_ADMIN_EMAIL'] || 'admin@homecare.com')
     expect(res.headers['set-cookie']).toBeDefined()
   })
 
   it('401 con contraseña incorrecta', async () => {
     const res = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'admin@homecare.com', password: 'wrongpass' })
+      .send({ email: process.env['SEED_ADMIN_EMAIL'] || 'admin@homecare.com', password: 'wrongpass' })
     expect(res.status).toBe(401)
     expect(res.body.success).toBe(false)
   })

@@ -24,7 +24,7 @@ describe('User Endpoints Integration Tests', () => {
     // 1. Log in as the seeded admin to get the session cookie
     const loginRes = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'admin@homecare.com', password: 'Admin123!' })
+      .send({ email: process.env['SEED_ADMIN_EMAIL'] || 'admin@homecare.com', password: process.env['SEED_ADMIN_PASSWORD'] || 'Admin123!' })
 
     const cookies = loginRes.headers['set-cookie'] as unknown as string[] | undefined
     if (cookies) {
@@ -36,7 +36,7 @@ describe('User Endpoints Integration Tests', () => {
 
     // 2. Retrieve seeded admin and role details
     const adminUser = await prisma.user.findFirst({
-      where: { email: 'admin@homecare.com' }
+      where: { email: process.env['SEED_ADMIN_EMAIL'] || 'admin@homecare.com' }
     })
     if (!adminUser) throw new Error('Seeded admin user not found')
     adminUserId = adminUser.id

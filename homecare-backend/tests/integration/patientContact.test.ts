@@ -13,7 +13,7 @@ beforeAll(async () => {
   // Log in as the seeded admin to get the session cookie
   const res = await request(app)
     .post('/api/auth/login')
-    .send({ email: 'admin@homecare.com', password: 'Admin123!' })
+    .send({ email: process.env['SEED_ADMIN_EMAIL'] || 'admin@homecare.com', password: process.env['SEED_ADMIN_PASSWORD'] || 'Admin123!' })
 
   const cookies = res.headers['set-cookie'] as unknown as string[] | undefined
   if (cookies) {

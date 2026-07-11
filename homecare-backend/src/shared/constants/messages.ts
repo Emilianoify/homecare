@@ -77,6 +77,16 @@ export const ERROR_MESSAGES = {
     ALREADY_DISCONTINUED: 'La medicación ya fue discontinuada',
     VALIDATION_ERROR:     'Datos de medicación inválidos',
   },
+  AUTHORIZATION: {
+    NOT_FOUND:        'Autorización no encontrada',
+    VALIDATION_ERROR: 'Datos de autorización inválidos',
+  },
+  CARE_PLAN: {
+    NOT_FOUND:        'Plan de atención no encontrado',
+    ALREADY_ACTIVE:   'Ya existe un plan activo para este profesional y especialidad en esta internación',
+    ALREADY_INACTIVE: 'El plan de atención ya está inactivo',
+    VALIDATION_ERROR: 'Datos de plan de atención inválidos',
+  },
   GENERAL: {
     VALIDATION_ERROR: 'Datos inválidos',
     FORBIDDEN:        'Acceso denegado',
@@ -177,5 +187,17 @@ export const SUCCESS_MESSAGES = {
     LIST:          'Medicaciones obtenidas exitosamente',
     UPDATED:       'Medicación actualizada exitosamente',
     DISCONTINUED:  'Medicación discontinuada exitosamente',
+  },
+  AUTHORIZATION: {
+    CREATED: 'Autorización creada exitosamente',
+    FOUND:   'Autorización obtenida exitosamente',
+    LIST:    'Autorizaciones obtenidas exitosamente',
+    UPDATED: 'Estado de autorización actualizado exitosamente',
+  },
+  CARE_PLAN: {
+    CREATED:     'Plan de atención creado exitosamente',
+    FOUND:       'Plan de atención obtenido exitosamente',
+    LIST:        'Planes de atención obtenidos exitosamente',
+    DEACTIVATED: 'Plan de atención desactivado exitosamente',
   },
 } as const

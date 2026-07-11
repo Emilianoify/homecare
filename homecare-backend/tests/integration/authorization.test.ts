@@ -30,16 +30,15 @@ afterAll(async () => {
   await disconnectDatabase()
 })
 
-describe('Medication Endpoints Integration Tests', () => {
-  const patientDni = '35881457'
-  const professionalCuit = '27-35881457-9'
-  const insurerCuit = '30-35881457-9'
-  let createdMedicationId: string
-  let secondaryMedicationId: string
+describe('Authorization Endpoints Integration Tests', () => {
+  const patientDni = '35881467'
+  const professionalCuit = '27-35881467-9'
+  const insurerCuit = '30-35881467-9'
+  let createdAuthId: string
 
   beforeAll(async () => {
     // 1. Clean up stale records from previous runs
-    await prisma.medication.deleteMany({
+    await prisma.authorization.deleteMany({
       where: {
         internment: {
           patient: { dni: patientDni }
@@ -64,7 +63,7 @@ describe('Medication Endpoints Integration Tests', () => {
       data: {
         companyId:     company.id,
         branchId,
-        lastName:      'García Medicaciones',
+        lastName:      'García Autorizaciones',
         firstName:     'Luis',
         dni:           patientDni,
         dateOfBirth:   new Date('1985-10-25'),
@@ -81,9 +80,9 @@ describe('Medication Endpoints Integration Tests', () => {
     const doc = await prisma.professional.create({
       data: {
         companyId:             company.id,
-        lastName:              'Sosa Medicaciones',
+        lastName:              'Sosa Autorizaciones',
         firstName:             'Juan',
-        dni:                   '35881458',
+        dni:                   '35881468',
         cuit:                  professionalCuit,
         vatCondition:          'MONOTAX',
         specialty:             'MEDICINE',
@@ -99,8 +98,8 @@ describe('Medication Endpoints Integration Tests', () => {
     const insurer = await prisma.healthInsurer.create({
       data: {
         companyId:   company.id,
-        name:        'Obra Social Medicaciones',
-        acronym:     'OSM',
+        name:        'Obra Social Autorizaciones',
+        acronym:     'OSA',
         cuit:        insurerCuit,
         insurerType: 'PREPAID',
         billingMode: 'PER_VISIT',
@@ -126,186 +125,151 @@ describe('Medication Endpoints Integration Tests', () => {
     testInternmentId = internment.id
   })
 
-  describe('POST /api/internments/:internmentId/medications', () => {
+  describe('POST /api/internments/:internmentId/authorizations', () => {
     it('debe retornar 401 si no está autenticado', async () => {
       const res = await request(app)
-        .post(`/api/internments/${testInternmentId}/medications`)
+        .post(`/api/internments/${testInternmentId}/authorizations`)
         .send({
-          name:      'Enalapril',
-          dose:      '10mg',
-          route:     'Oral',
-          frequency: 'Cada 12 horas',
-          startDate: '2026-05-12'
+          healthInsurerId:   testInsurerId,
+          number:            'AUT-2026-0001',
+          type:              'INITIAL',
+          validFrom:         '2026-05-12',
+          validTo:           '2026-08-12',
+          authorizedModules: ['MEDICINE', 'NURSING']
         })
       expect(res.status).toBe(401)
     })
 
-    it('debe crear correctamente una medicación (201)', async () => {
+    it('debe crear correctamente una autorización (201)', async () => {
       const res = await request(app)
-        .post(`/api/internments/${testInternmentId}/medications`)
+        .post(`/api/internments/${testInternmentId}/authorizations`)
         .set('Cookie', authCookie)
         .send({
-          name:      'Enalapril',
-          dose:      '10mg',
-          route:     'Oral',
-          frequency: 'Cada 12 horas',
-          startDate: '2026-05-12'
+          healthInsurerId:   testInsurerId,
+          number:            'AUT-2026-0001',
+          type:              'INITIAL',
+          validFrom:         '2026-05-12',
+          validTo:           '2026-08-12',
+          authorizedModules: ['MEDICINE', 'NURSING'],
+          notes:             'Autorización inicial de prueba'
         })
       expect(res.status).toBe(201)
       expect(res.body.success).toBe(true)
-      expect(res.body.data.name).toBe('Enalapril')
-      expect(res.body.data.active).toBe(true)
-      expect(res.body.data.prescribedById).toBeDefined()
-      createdMedicationId = res.body.data.id
+      expect(res.body.data.number).toBe('AUT-2026-0001')
+      expect(res.body.data.status).toBe('PENDING')
+      expect(res.body.data.authorizedModules).toEqual(['MEDICINE', 'NURSING'])
+      createdAuthId = res.body.data.id
     })
 
-    it('debe crear correctamente una segunda medicación (201)', async () => {
+    it('debe retornar 400 si los módulos autorizados están vacíos', async () => {
       const res = await request(app)
-        .post(`/api/internments/${testInternmentId}/medications`)
+        .post(`/api/internments/${testInternmentId}/authorizations`)
         .set('Cookie', authCookie)
         .send({
-          name:      'Furosemida',
-          dose:      '40mg',
-          route:     'Oral',
-          frequency: 'Una vez al día',
-          startDate: '2026-05-12'
-        })
-      expect(res.status).toBe(201)
-      expect(res.body.success).toBe(true)
-      expect(res.body.data.name).toBe('Furosemida')
-      expect(res.body.data.active).toBe(true)
-      secondaryMedicationId = res.body.data.id
-    })
-
-    it('debe retornar 400 si los campos son inválidos (nombre muy corto)', async () => {
-      const res = await request(app)
-        .post(`/api/internments/${testInternmentId}/medications`)
-        .set('Cookie', authCookie)
-        .send({
-          name:      'A',
-          dose:      '10mg',
-          route:     'Oral',
-          frequency: 'Cada 12 horas',
-          startDate: '2026-05-12'
+          healthInsurerId:   testInsurerId,
+          number:            'AUT-2026-0002',
+          type:              'INITIAL',
+          validFrom:         '2026-05-12',
+          validTo:           '2026-08-12',
+          authorizedModules: []
         })
       expect(res.status).toBe(400)
-      expect(res.body.success).toBe(false)
     })
 
     it('debe retornar 404 si la internación no existe', async () => {
       const res = await request(app)
-        .post(`/api/internments/${nonExistentId}/medications`)
+        .post(`/api/internments/${nonExistentId}/authorizations`)
         .set('Cookie', authCookie)
         .send({
-          name:      'Enalapril',
-          dose:      '10mg',
-          route:     'Oral',
-          frequency: 'Cada 12 horas',
-          startDate: '2026-05-12'
+          healthInsurerId:   testInsurerId,
+          number:            'AUT-2026-0003',
+          type:              'INITIAL',
+          validFrom:         '2026-05-12',
+          validTo:           '2026-08-12',
+          authorizedModules: ['MEDICINE']
         })
       expect(res.status).toBe(404)
     })
   })
 
-  describe('GET /api/internments/:internmentId/medications', () => {
-    it('debe listar todas las medicaciones de la internación', async () => {
+  describe('GET /api/internments/:internmentId/authorizations', () => {
+    it('debe listar todas las autorizaciones de la internación', async () => {
       const res = await request(app)
-        .get(`/api/internments/${testInternmentId}/medications`)
+        .get(`/api/internments/${testInternmentId}/authorizations`)
         .set('Cookie', authCookie)
       expect(res.status).toBe(200)
       expect(res.body.success).toBe(true)
-      expect(res.body.data.length).toBe(2)
-    })
-
-    it('debe permitir filtrar por active=true', async () => {
-      const res = await request(app)
-        .get(`/api/internments/${testInternmentId}/medications?active=true`)
-        .set('Cookie', authCookie)
-      expect(res.status).toBe(200)
-      expect(res.body.data.length).toBe(2)
-    })
-
-    it('debe permitir filtrar por active=false', async () => {
-      const res = await request(app)
-        .get(`/api/internments/${testInternmentId}/medications?active=false`)
-        .set('Cookie', authCookie)
-      expect(res.status).toBe(200)
-      expect(res.body.data.length).toBe(0)
+      expect(res.body.data.length).toBe(1)
     })
 
     it('debe retornar 404 para internación inexistente', async () => {
       const res = await request(app)
-        .get(`/api/internments/${nonExistentId}/medications`)
+        .get(`/api/internments/${nonExistentId}/authorizations`)
         .set('Cookie', authCookie)
       expect(res.status).toBe(404)
     })
   })
 
-  describe('PUT /api/internments/:internmentId/medications/:medicationId', () => {
-    it('debe actualizar los datos de la medicación (200)', async () => {
+  describe('GET /api/internments/:internmentId/authorizations/:authorizationId', () => {
+    it('debe retornar el detalle de la autorización', async () => {
       const res = await request(app)
-        .put(`/api/internments/${testInternmentId}/medications/${createdMedicationId}`)
+        .get(`/api/internments/${testInternmentId}/authorizations/${createdAuthId}`)
         .set('Cookie', authCookie)
-        .send({
-          dose: '20mg'
-        })
       expect(res.status).toBe(200)
       expect(res.body.success).toBe(true)
-      expect(res.body.data.dose).toBe('20mg')
+      expect(res.body.data.id).toBe(createdAuthId)
     })
 
-    it('debe retornar 404 si la medicación no existe', async () => {
+    it('debe retornar 404 para autorización inexistente', async () => {
       const res = await request(app)
-        .put(`/api/internments/${testInternmentId}/medications/${nonExistentId}`)
+        .get(`/api/internments/${testInternmentId}/authorizations/${nonExistentId}`)
         .set('Cookie', authCookie)
-        .send({
-          dose: '20mg'
-        })
       expect(res.status).toBe(404)
     })
   })
 
-  describe('PATCH /api/internments/:internmentId/medications/:medicationId/discontinue', () => {
-    it('debe discontinuar correctamente una medicación', async () => {
+  describe('PATCH /api/internments/:internmentId/authorizations/:authorizationId/status', () => {
+    it('debe actualizar el estado a APPROVED (200)', async () => {
       const res = await request(app)
-        .patch(`/api/internments/${testInternmentId}/medications/${createdMedicationId}/discontinue`)
+        .patch(`/api/internments/${testInternmentId}/authorizations/${createdAuthId}/status`)
         .set('Cookie', authCookie)
-        .send({
-          endDate: '2026-07-11'
-        })
+        .send({ status: 'APPROVED' })
       expect(res.status).toBe(200)
       expect(res.body.success).toBe(true)
-      expect(res.body.data.active).toBe(false)
-      expect(res.body.data.endDate).toBe('2026-07-11')
+      expect(res.body.data.status).toBe('APPROVED')
     })
 
-    it('debe retornar 409 si ya está discontinuada al intentar discontinuar de nuevo', async () => {
+    it('debe actualizar el estado a REJECTED (200)', async () => {
       const res = await request(app)
-        .patch(`/api/internments/${testInternmentId}/medications/${createdMedicationId}/discontinue`)
+        .patch(`/api/internments/${testInternmentId}/authorizations/${createdAuthId}/status`)
         .set('Cookie', authCookie)
-        .send({
-          endDate: '2026-07-12'
-        })
-      expect(res.status).toBe(409)
-      expect(res.body.message).toBe('La medicación ya fue discontinuada')
+        .send({ status: 'REJECTED' })
+      expect(res.status).toBe(200)
+      expect(res.body.success).toBe(true)
+      expect(res.body.data.status).toBe('REJECTED')
     })
 
-    it('debe retornar 409 al intentar actualizar una medicación discontinuada', async () => {
+    it('debe retornar 400 si el estado es inválido', async () => {
       const res = await request(app)
-        .put(`/api/internments/${testInternmentId}/medications/${createdMedicationId}`)
+        .patch(`/api/internments/${testInternmentId}/authorizations/${createdAuthId}/status`)
         .set('Cookie', authCookie)
-        .send({
-          dose: '30mg'
-        })
-      expect(res.status).toBe(409)
-      expect(res.body.message).toBe('La medicación ya fue discontinuada')
+        .send({ status: 'INVALID_STATUS' })
+      expect(res.status).toBe(400)
     })
   })
 
-  describe('DELETE /api/internments/:internmentId/medications/:medicationId', () => {
-    it('debe retornar 404 porque no existe la ruta delete', async () => {
+  describe('PUT y DELETE no permitidos', () => {
+    it('PUT debe retornar 404', async () => {
       const res = await request(app)
-        .delete(`/api/internments/${testInternmentId}/medications/${createdMedicationId}`)
+        .put(`/api/internments/${testInternmentId}/authorizations/${createdAuthId}`)
+        .set('Cookie', authCookie)
+        .send({ number: 'NEW-NUM-123' })
+      expect(res.status).toBe(404)
+    })
+
+    it('DELETE debe retornar 404', async () => {
+      const res = await request(app)
+        .delete(`/api/internments/${testInternmentId}/authorizations/${createdAuthId}`)
         .set('Cookie', authCookie)
       expect(res.status).toBe(404)
     })

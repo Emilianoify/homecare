@@ -10,6 +10,13 @@ const prisma  = new PrismaClient({ adapter })
 async function main(): Promise<void> {
   console.log('🌱 Seeding...')
 
+  const adminEmail = process.env['SEED_ADMIN_EMAIL']
+  const adminPassword = process.env['SEED_ADMIN_PASSWORD']
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error('❌ SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD environment variables are required to seed.')
+  }
+
   const company = await prisma.company.upsert({
     where:  { cuit: '30-12345678-9' },
     update: {},
@@ -24,9 +31,9 @@ async function main(): Promise<void> {
   })
 
   // Clean up old version 0 UUID records if present
-  await prisma.refreshToken.deleteMany({ where: { user: { email: 'admin@homecare.com' } } })
-  await prisma.auditLog.deleteMany({ where: { user: { email: 'admin@homecare.com' } } })
-  await prisma.user.deleteMany({ where: { email: 'admin@homecare.com' } })
+  await prisma.refreshToken.deleteMany({ where: { user: { email: adminEmail } } })
+  await prisma.auditLog.deleteMany({ where: { user: { email: adminEmail } } })
+  await prisma.user.deleteMany({ where: { email: adminEmail } })
   await prisma.branch.deleteMany({ where: { id: 'aaaaaaaa-0000-0000-0000-000000000001' } })
 
   const branch = await prisma.branch.upsert({
@@ -68,15 +75,15 @@ async function main(): Promise<void> {
     })
   }
 
-  const passwordHash = await argon2.hash('Admin123!', {
+  const passwordHash = await argon2.hash(adminPassword, {
     type: argon2.argon2id, memoryCost: 65536, timeCost: 3, parallelism: 4,
   })
 
   await prisma.user.upsert({
-    where:  { email: 'admin@homecare.com' },
+    where:  { email: adminEmail },
     update: {},
     create: {
-      email:     'admin@homecare.com',
+      email:     adminEmail,
       passwordHash,
       firstName: 'Admin',
       lastName:  'HomeCare',
@@ -225,7 +232,7 @@ async function main(): Promise<void> {
     console.log('✓ Tarifas IOMA creadas: ENF-01, KIN-01, MED-01')
   }
 
-  console.log('✅ Seed completo — admin@homecare.com / Admin123!')
+  console.log(`✅ Seed completo — ${adminEmail} / ${adminPassword}`)
 }
 
 main()
