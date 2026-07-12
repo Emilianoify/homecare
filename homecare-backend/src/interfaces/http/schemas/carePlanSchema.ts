@@ -13,7 +13,7 @@ export const createCarePlanSchema = z.object({
   weekDays:        z.array(
                      z.number().int().min(0).max(6, { error: V })
                    ).optional(),
-  estimatedTime:   z.string().optional(),
+  estimatedTime:   z.string().max(500).optional(),
   totalSessions:   z.number().int().positive({ error: V }).optional(),
   startDate:       z.iso.date({ error: V }),
   endDate:         z.iso.date({ error: V }).optional(),

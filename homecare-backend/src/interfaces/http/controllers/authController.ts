@@ -1,12 +1,11 @@
 import type { Request, Response } from 'express'
 import { LoginUseCase } from '../../../application/useCases/auth/loginUseCase.js'
-import { RegisterUseCase } from '../../../application/useCases/auth/registerUseCase.js'
 import { LogoutUseCase } from '../../../application/useCases/auth/logoutUseCase.js'
 import { RefreshTokenUseCase } from '../../../application/useCases/auth/refreshTokenUseCase.js'
 import { UserRepository } from '../../../infrastructure/database/repositories/userRepository.js'
-import { sendOk, sendCreated, sendUnauthorized } from '../../../shared/helpers/responseHelper.js'
+import { sendOk, sendUnauthorized } from '../../../shared/helpers/responseHelper.js'
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '../../../shared/constants/messages.js'
-import type { LoginDto, RegisterDto } from '../schemas/authSchema.js'
+import type { LoginDto } from '../schemas/authSchema.js'
 
 const COOKIE_BASE = {
   httpOnly: true,
@@ -30,18 +29,15 @@ export class AuthController {
     sendOk(res, SUCCESS_MESSAGES.AUTH.LOGIN, user)
   }
 
-  register = async (req: Request, res: Response): Promise<void> => {
-    const user = await new RegisterUseCase(this.userRepository).execute(req.body as RegisterDto)
-    sendCreated(res, SUCCESS_MESSAGES.AUTH.REGISTER, user)
-  }
-
   logout = async (req: Request, res: Response): Promise<void> => {
     const token = req.cookies['refresh_token'] as string | undefined
     if (token && req.user) {
       await new LogoutUseCase(this.userRepository).execute(req.user.userId, token)
     }
-    res.clearCookie('access_token')
-    res.clearCookie('refresh_token', { path: '/api/auth/refresh' })
+    // clearCookie repite los atributos con los que se creó la cookie
+    // (salvo maxAge) para que el browser la borre siempre.
+    res.clearCookie('access_token', COOKIE_BASE)
+    res.clearCookie('refresh_token', { ...COOKIE_BASE, path: '/api/auth/refresh' })
     sendOk(res, SUCCESS_MESSAGES.AUTH.LOGOUT)
   }
 

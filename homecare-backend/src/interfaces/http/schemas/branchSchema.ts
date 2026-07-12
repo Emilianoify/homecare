@@ -6,9 +6,9 @@ const GV = ERROR_MESSAGES.GENERAL.VALIDATION_ERROR
 
 export const createBranchSchema = z.object({
   name:    z.string().min(2, { error: V }).max(100, { error: V }),
-  address: z.string().min(5, { error: V }),
-  city:    z.string().optional(),
-  phone:   z.string().optional(),
+  address: z.string().min(5, { error: V }).max(200, { error: V }),
+  city:    z.string().max(500).optional(),
+  phone:   z.string().max(500).optional(),
   active:  z.boolean().default(true),
 })
 

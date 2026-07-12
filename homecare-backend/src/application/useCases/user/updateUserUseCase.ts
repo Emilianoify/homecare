@@ -12,6 +12,13 @@ export class UpdateUserUseCase {
     const user = await this.userRepository.findById(id, companyId)
     if (!user) throw new AppError(404, ERROR_MESSAGES.USER.NOT_FOUND)
 
+    // Si se cambia el rol, el nuevo roleId debe pertenecer a la company
+    // del caller (evita asignar un rol de otra organización).
+    if (dto.roleId !== undefined) {
+      const roleOk = await this.userRepository.roleBelongsToCompany(dto.roleId, companyId)
+      if (!roleOk) throw new AppError(400, ERROR_MESSAGES.USER.INVALID_ROLE)
+    }
+
     const updated = await this.userRepository.update(id, {
       firstName: dto.firstName,
       lastName:  dto.lastName,

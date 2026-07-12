@@ -55,6 +55,7 @@ export const ERROR_MESSAGES = {
     EMAIL_EXISTS:         'El email ya está registrado',
     CANNOT_DELETE_SELF:   'No podés eliminar tu propio usuario',
     INVALID_PASSWORD:     'La contraseña actual es incorrecta',
+    INVALID_ROLE:         'El rol indicado no pertenece a tu organización',
     VALIDATION_ERROR:     'Datos de usuario inválidos',
   },
   ROLE: {
@@ -87,11 +88,19 @@ export const ERROR_MESSAGES = {
     ALREADY_INACTIVE: 'El plan de atención ya está inactivo',
     VALIDATION_ERROR: 'Datos de plan de atención inválidos',
   },
+  VISIT: {
+    NOT_FOUND:         'Visita no encontrada',
+    ALREADY_BILLED:    'La visita ya fue facturada y no puede modificarse',
+    ALREADY_MISSED:    'La visita ya está marcada como no realizada',
+    ALREADY_COMPLETED: 'La visita ya está completada',
+    VALIDATION_ERROR:  'Datos de visita inválidos',
+  },
   GENERAL: {
-    VALIDATION_ERROR: 'Datos inválidos',
-    FORBIDDEN:        'Acceso denegado',
-    INTERNAL_ERROR:   'Error interno del servidor',
-    NOT_FOUND:        'Recurso no encontrado',
+    VALIDATION_ERROR:  'Datos inválidos',
+    FORBIDDEN:         'Acceso denegado',
+    INTERNAL_ERROR:    'Error interno del servidor',
+    NOT_FOUND:         'Recurso no encontrado',
+    TOO_MANY_REQUESTS: 'Demasiadas solicitudes. Probá de nuevo en unos minutos.',
   },
 } as const
 
@@ -199,5 +208,11 @@ export const SUCCESS_MESSAGES = {
     FOUND:       'Plan de atención obtenido exitosamente',
     LIST:        'Planes de atención obtenidos exitosamente',
     DEACTIVATED: 'Plan de atención desactivado exitosamente',
+  },
+  VISIT: {
+    CREATED: 'Visita registrada exitosamente',
+    FOUND:   'Visita obtenida exitosamente',
+    LIST:    'Visitas obtenidas exitosamente',
+    MISSED:  'Visita marcada como no realizada exitosamente',
   },
 } as const

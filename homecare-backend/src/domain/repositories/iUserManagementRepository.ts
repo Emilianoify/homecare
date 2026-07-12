@@ -14,6 +14,7 @@ export interface IUserManagementRepository {
   findAll(filters: UserFilters): Promise<PaginatedResult<UserWithRole>>
   findById(id: string, companyId: string): Promise<UserWithRole | null>
   findByEmail(email: string): Promise<UserWithRole | null>
+  roleBelongsToCompany(roleId: string, companyId: string): Promise<boolean>
   create(data: {
     companyId:    string
     branchId?:    string

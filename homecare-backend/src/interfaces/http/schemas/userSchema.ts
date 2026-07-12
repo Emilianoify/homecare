@@ -5,9 +5,10 @@ const V  = ERROR_MESSAGES.USER.VALIDATION_ERROR
 const GV = ERROR_MESSAGES.GENERAL.VALIDATION_ERROR
 
 export const createUserSchema = z.object({
-  email:     z.email({ error: V }),
+  email:     z.email({ error: V }).max(254, { error: V }),
   password:  z.string()
                .min(8,  { error: V })
+               .max(128, { error: V })
                .regex(/[A-Z]/, { error: V })
                .regex(/[0-9]/, { error: V }),
   firstName: z.string().min(2, { error: V }).max(100, { error: V }),
@@ -26,9 +27,10 @@ export const updateUserSchema = z.object({
 })
 
 export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(6,  { error: V }),
+  currentPassword: z.string().min(6,  { error: V }).max(128, { error: V }),
   newPassword:     z.string()
                     .min(8,  { error: V })
+                    .max(128, { error: V })
                     .regex(/[A-Z]/, { error: V })
                     .regex(/[0-9]/, { error: V }),
 })
@@ -40,7 +42,7 @@ export const userParamsSchema = z.object({
 export const userQuerySchema = z.object({
   page:   z.coerce.number().int().positive().default(1),
   limit:  z.coerce.number().int().min(1).max(100).default(20),
-  search: z.string().optional(),
+  search: z.string().max(100).optional(),
   roleId: z.uuid({ error: GV }).optional(),
   active: z.enum(['true', 'false']).transform(v => v === 'true').optional(),
 })

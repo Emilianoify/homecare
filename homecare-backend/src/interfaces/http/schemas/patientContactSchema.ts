@@ -7,11 +7,11 @@ const GV = ERROR_MESSAGES.GENERAL.VALIDATION_ERROR
 export const createPatientContactSchema = z.object({
   name:               z.string().min(2, { error: V }).max(100, { error: V }),
   relationship:       z.string().min(2, { error: V }).max(50,  { error: V }),
-  phone:              z.string().min(8, { error: V }),
-  phoneAlternative:   z.string().optional(),
+  phone:              z.string().min(8, { error: V }).max(30, { error: V }),
+  phoneAlternative:   z.string().max(500).optional(),
   email:              z.email({ error: V }).optional(),
   livesAtCareAddress: z.boolean().default(false),
-  availabilityHours:  z.string().optional(),
+  availabilityHours:  z.string().max(500).optional(),
   isPrimary:          z.boolean().default(false),
 })
 

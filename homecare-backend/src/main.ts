@@ -11,16 +11,22 @@ import { AppError } from './shared/errors/AppError.js'
 import { sendInternalError } from './shared/helpers/responseHelper.js'
 import { ERROR_MESSAGES } from './shared/constants/messages.js'
 import { connectDatabase, disconnectDatabase } from './infrastructure/database/prismaClient.js'
+import { globalRateLimiter } from './interfaces/http/middlewares/rateLimiters.js'
 import type { Request, Response, NextFunction } from 'express'
 
 export const app = express()
 
+// Detrás de nginx: sin esto req.ip es la IP del proxy y los rate limiters
+// cuentan a todos los usuarios como una sola IP (evadible con X-Forwarded-For).
+app.set('trust proxy', 1)
+
 app.use(helmet())
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }))
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '1mb' }))
+app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 app.use(cookieParser())
 app.use(compression())
+app.use(globalRateLimiter)
 app.use(morgan('combined', {
   stream: { write: (msg: string) => logger.info(msg.trim()) },
 }))

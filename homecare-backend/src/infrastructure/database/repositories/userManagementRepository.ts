@@ -49,6 +49,14 @@ export class UserManagementRepository implements IUserManagementRepository {
     })
   }
 
+  async roleBelongsToCompany(roleId: string, companyId: string): Promise<boolean> {
+    const role = await prisma.role.findFirst({
+      where:  { id: roleId, companyId },
+      select: { id: true },
+    })
+    return role !== null
+  }
+
   async create(data: {
     companyId:    string
     branchId?:    string

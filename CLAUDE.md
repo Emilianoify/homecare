@@ -519,10 +519,57 @@ res.cookie('refresh_token', refreshToken, {
 ```
 
 - argon2id: `memoryCost: 65536, timeCost: 3, parallelism: 4`
-- Rate limit en `/auth/login`: 5 intentos / 15 min por IP
-- RBAC verificado en middleware — nunca dentro del use-case
+- RBAC verificado en middleware (`requirePermission`) — nunca dentro del use-case
 - Auditoría en toda operación mutante (POST, PUT, PATCH, DELETE)
 - `companyId` siempre de `req.user` — nunca del body
+
+### Checklist de seguridad obligatorio — verificado en auditoría 2026-07
+
+Reglas salidas de una auditoría real. Código nuevo que las viole reintroduce
+una vulnerabilidad ya corregida. Se cumplen SIEMPRE:
+
+**Aislamiento multi-tenant (lo más crítico de esta app)**
+- `companyId` se deriva SIEMPRE de `req.user` (el token), jamás del body ni de
+  la query. Todo repo de lectura/escritura filtra por `companyId`.
+- **Cualquier foreign key que venga del body (roleId, branchId, etc.) se valida
+  contra la company del caller antes de usarse.** No alcanza con derivar
+  `companyId` del token: si el body trae un `roleId`, hay que confirmar que ese
+  rol pertenece a esa company. Sin esto se asignan entidades de otra
+  organización (cross-tenant + escalada de privilegios). Ver
+  `roleBelongsToCompany` en `createUserUseCase`/`updateUserUseCase`.
+- **No existen endpoints de auth que dupliquen el alta de usuarios por fuera de
+  `requirePermission`.** El alta vive SOLO en `POST /api/users`. No recrear un
+  `/register` que tome `companyId`/`roleId` del body sin control de permiso.
+
+**Auth**
+- Rate limiting cableado en tres niveles: global (`globalRateLimiter` en
+  `main.ts`), login (5/15min) y refresh (30/15min). `express-rate-limit` estaba
+  instalado pero sin usar — nunca dejarlo desconectado.
+- `app.set('trust proxy', 1)` obligatorio: detrás de nginx, sin esto los rate
+  limiters agrupan a todos por la IP del proxy y son evadibles con
+  `X-Forwarded-For`.
+- Login timing-safe: cuando el email no existe / usuario inactivo se verifica
+  contra un hash dummy de argon2 (anti-enumeración). Ver `loginUseCase.ts`.
+- Refresh tokens rotan en cada uso (ya lo hacía) y se persisten/revocan en DB.
+  El `nonce` del token usa `randomUUID()`, nunca `Math.random()`.
+- `res.clearCookie()` repite los atributos con los que se creó la cookie.
+- `JWT_SECRET` con mínimo 32 caracteres, validado en `env.ts`.
+
+**Validación Zod — regla dura**
+- TODO campo `z.string()` lleva `.max()` explícito. String sin tope = hallazgo
+  (DoS/bloat de DB). Vale también para los `search` de query (llegan a un
+  `contains`/ILIKE) y para las contraseñas (`.max(128)`; argon2 sobre MB es DoS).
+- TODO `z.array()` lleva `.max()`. Body JSON/urlencoded limitado a 1mb en `main.ts`.
+- Toda query/param se valida con su schema — nunca leer `req.query` crudo.
+
+**Seeds y dependencias**
+- El seed exige `SEED_ADMIN_EMAIL`/`SEED_ADMIN_PASSWORD` y aborta si faltan —
+  ninguna credencial default hardcodeada. `.env` fuera de git.
+- `pnpm audit --prod` antes de cada deploy; ningún CVE high/critical de runtime.
+
+**Deploy**
+- Cookies `sameSite: 'strict'`: frontend y API bajo el mismo dominio registrable
+  en producción, o el login se rompe.
 
 ---
 

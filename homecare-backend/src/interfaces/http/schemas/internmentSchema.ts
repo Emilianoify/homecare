@@ -13,21 +13,21 @@ export const createInternmentSchema = z.object({
   internmentType:             z.enum(InternmentType,  { error: V }),
   admissionMode:              z.enum(AdmissionMode,   { error: V }),
   admissionDate:              z.iso.date({ error: V }),
-  mainDiagnosis:              z.string().min(3, { error: V }),
+  mainDiagnosis:              z.string().min(3, { error: V }).max(500, { error: V }),
   cie10Code:                  z.string().min(3, { error: V }).max(10, { error: V }),
-  referenceHospital:          z.string().optional(),
-  omeRequestedBy:             z.string().optional(),
+  referenceHospital:          z.string().max(500).optional(),
+  omeRequestedBy:             z.string().max(500).optional(),
   omeDate:                    z.iso.date({ error: V }).optional(),
   medicalFamilyAgreement:     z.boolean().default(false),
   medicalFamilyAgreementDate: z.iso.date({ error: V }).optional(),
-  notes:                      z.string().optional(),
+  notes:                      z.string().max(500).optional(),
 })
 
 export const updateInternmentSchema = createInternmentSchema.partial()
 
 export const dischargeInternmentSchema = z.object({
   dischargeDate:   z.iso.date({ error: V }),
-  dischargeReason: z.string().min(3, { error: V }),
+  dischargeReason: z.string().min(3, { error: V }).max(500, { error: V }),
 })
 
 export const internmentParamsSchema = z.object({

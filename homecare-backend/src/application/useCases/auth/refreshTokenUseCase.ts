@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { randomUUID } from 'node:crypto'
 import { env } from '../../../infrastructure/config/env.js'
 import { AppError } from '../../../shared/errors/AppError.js'
 import { ERROR_MESSAGES } from '../../../shared/constants/messages.js'
@@ -38,7 +39,7 @@ export class RefreshTokenUseCase {
     )
 
     const refreshToken = jwt.sign(
-      { userId: user.id, nonce: Math.random() },
+      { userId: user.id, nonce: randomUUID() },
       env.JWT_SECRET,
       { expiresIn: env.REFRESH_TOKEN_EXPIRY as jwt.SignOptions['expiresIn'] }
     )

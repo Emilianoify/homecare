@@ -16,9 +16,9 @@ export const createFunctionalStatusSchema = z.object({
   nasogastricTube:        z.boolean().default(false),
   urinaryCatheter:        z.boolean().default(false),
   pressureUlcers:         z.boolean().default(false),
-  pressureUlcersLocation: z.string().optional(),
+  pressureUlcersLocation: z.string().max(500).optional(),
   barthelScore:           z.record(z.string(), z.unknown()).optional(),
-  notes:                  z.string().optional(),
+  notes:                  z.string().max(500).optional(),
 })
 
 export const functionalStatusParamsSchema = z.object({

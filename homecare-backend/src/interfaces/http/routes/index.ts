@@ -15,6 +15,7 @@ import { diagnosisRouter } from './diagnosisRoutes.js'
 import { medicationRouter } from './medicationRoutes.js'
 import { authorizationRouter } from './authorizationRoutes.js'
 import { carePlanRouter } from './carePlanRoutes.js'
+import { visitRouter } from './visitRoutes.js'
 
 const router = Router()
 
@@ -34,5 +35,6 @@ router.use('/internments/:internmentId/diagnoses', diagnosisRouter)
 router.use('/internments/:internmentId/medications', medicationRouter)
 router.use('/internments/:internmentId/authorizations', authorizationRouter)
 router.use('/internments/:internmentId/care-plans', carePlanRouter)
+router.use('/internments/:internmentId/visits', visitRouter)
 
 export { router as apiRouter }

@@ -7,13 +7,13 @@ const GV = ERROR_MESSAGES.GENERAL.VALIDATION_ERROR
 
 export const createAuthorizationSchema = z.object({
   healthInsurerId:   z.uuid({ error: V }),
-  number:            z.string().min(3, { error: V }),
-  opNumber:          z.string().optional(),
+  number:            z.string().min(3, { error: V }).max(100, { error: V }),
+  opNumber:          z.string().max(500).optional(),
   type:              z.enum(AuthorizationType,  { error: V }),
   validFrom:         z.iso.date({ error: V }),
   validTo:           z.iso.date({ error: V }),
-  authorizedModules: z.array(z.string().min(1, { error: V })).min(1, { error: V }),
-  notes:             z.string().optional(),
+  authorizedModules: z.array(z.string().min(1, { error: V }).max(50, { error: V })).min(1, { error: V }).max(100, { error: V }),
+  notes:             z.string().max(500).optional(),
 })
 
 export const updateAuthorizationStatusSchema = z.object({
