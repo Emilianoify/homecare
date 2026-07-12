@@ -190,8 +190,8 @@ enum DeliveryNoteStatus {
 
 enum EquipmentStatus {
   AVAILABLE
-  RENTED
-  MAINTENANCE
+  IN_USE
+  MAINTENANCE_REQUESTED
   RETIRED
 }
 
@@ -201,33 +201,46 @@ enum RentalStatus {
   OVERDUE
 }
 
-enum IncidentCategory {
+enum SupplyOrderStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  PARTIAL
+  DELIVERED
+  CANCELLED
+}
+
+enum IncidentType {
+  FALL
+  MEDICATION_ERROR
   CLINICAL
   ADMINISTRATIVE
   PROFESSIONAL
   LOGISTIC
+  OTHER
 }
 
-enum Severity {
+enum IncidentSeverity {
   LOW
-  MODERATE
+  MEDIUM
   HIGH
   CRITICAL
 }
 
 enum IncidentStatus {
   OPEN
+  IN_REVIEW
   IN_PROGRESS
   RESOLVED
   CLOSED
 }
 
-enum AlertType {
+enum AlertTriggerType {
+  NO_VISIT
   AUTHORIZATION_EXPIRING
-  UNREGISTERED_VISIT
-  CRITICAL_STOCK
-  EQUIPMENT_OVERDUE
-  LICENSE_EXPIRING
+  NO_CLINICAL_NOTE
+  CRITICAL_INCIDENT_UNRESOLVED
+  NO_FUNCTIONAL_STATUS
 }
 
 enum AuditAction {
@@ -256,20 +269,24 @@ model Company {
   phone        String?
   email        String?
   website      String?
-  logoUrl      String?
-  active       Boolean      @default(true)
-  createdAt    DateTime     @default(now())
-  deletedAt    DateTime?
+  logoUrl            String?
+  allowNegativeStock Boolean      @default(true)
+  active             Boolean      @default(true)
+  createdAt          DateTime     @default(now())
+  deletedAt          DateTime?
 
-  branches      Branch[]
-  users         User[]
-  professionals Professional[]
-  supplies      Supply[]
-  equipment     Equipment[]
-  alertConfigs  AlertConfig[]
-  auditLogs     AuditLog[]
-  roles         Role[]
+  branches       Branch[]
+  users          User[]
+  professionals  Professional[]
+  supplies       Supply[]
+  equipment      Equipment[]
+  alertConfigs   AlertConfig[]
+  auditLogs      AuditLog[]
+  roles          Role[]
   healthInsurers HealthInsurer[]
+  supplyOrders   SupplyOrder[]
+  branchStocks   BranchStock[]
+  stockMovements StockMovement[]
 
   @@map("companies")
 }
@@ -292,7 +309,6 @@ model Branch {
   deliveryNotes  DeliveryNote[]
   billingBatches BillingBatch[]
   settlements    Settlement[]
-  alertConfigs   AlertConfig[]
   patients       Patient[]
   stockMovements StockMovement[]
   equipment      Equipment[]
@@ -368,10 +384,10 @@ model User {
   stockMovements     StockMovement[]
   deliveryNotes      DeliveryNote[]
   incidents          Incident[]
-  assignedIncidents  Incident[]         @relation("AssignedIncidents")
   budgets            Budget[]
   billingBatches     BillingBatch[]
   settlements        Settlement[]
+  supplyOrders       SupplyOrder[]
 
   @@map("users")
 }
@@ -571,6 +587,7 @@ model Internment {
   batchItems         BatchItem[]
   currentAccounts    CurrentAccount[]
   incidents          Incident[]
+  supplyOrders       SupplyOrder[]
 
   @@map("internments")
 }
@@ -589,9 +606,10 @@ model Authorization {
   notes             String?
   createdAt         DateTime            @default(now())
 
-  internment    Internment    @relation(fields: [internmentId], references: [id])
-  healthInsurer HealthInsurer @relation(fields: [healthInsurerId], references: [id])
-  carePlans     CarePlan[]
+  internment       Internment        @relation(fields: [internmentId], references: [id])
+  healthInsurer    HealthInsurer     @relation(fields: [healthInsurerId], references: [id])
+  carePlans        CarePlan[]
+  equipmentRentals EquipmentRental[]
 
   @@map("authorizations")
 }
@@ -744,6 +762,7 @@ model HealthInsurer {
   authorizations    Authorization[]
   serviceRates      InsurerServiceRate[]
   professionalLinks ProfessionalInsurer[]
+  supplyRates       InsurerSupplyRate[]
   budgets           Budget[]
   billingBatches    BillingBatch[]
   currentAccounts   CurrentAccount[]
@@ -818,10 +837,12 @@ model Budget {
   approvedAt        DateTime?
   createdAt         DateTime     @default(now())
 
-  internment    Internment    @relation(fields: [internmentId], references: [id])
-  healthInsurer HealthInsurer @relation(fields: [healthInsurerId], references: [id])
+  internment       Internment        @relation(fields: [internmentId], references: [id])
+  healthInsurer    HealthInsurer     @relation(fields: [healthInsurerId], references: [id])
   createdBy     User          @relation(fields: [createdById], references: [id])
-  lines         BudgetLine[]
+  lines            BudgetLine[]
+  equipmentRentals EquipmentRental[]
+  supplyOrders     SupplyOrder[]
 
   @@map("budgets")
 }
@@ -938,59 +959,81 @@ model CurrentAccount {
 }
 
 model Supply {
-  id        String         @id @default(uuid())
-  companyId String
-  name      String
-  sku       String
-  unit      String
-  category  SupplyCategory
-  minStock  Int
-  baseCost  Decimal        @db.Decimal(12, 2)
-  basePrice Decimal        @db.Decimal(12, 2)
-  active    Boolean        @default(true)
-  createdAt DateTime       @default(now())
-  deletedAt DateTime?
+  id                 String              @id @default(uuid())
+  companyId          String
+  code               String?
+  name               String
+  unit               String
+  purchasePrice      Decimal             @db.Decimal(12, 2)
+  active             Boolean             @default(true)
+  createdAt          DateTime            @default(now())
+  deletedAt          DateTime?
 
-  company        Company            @relation(fields: [companyId], references: [id])
-  branchStocks   BranchStock[]
-  stockMovements StockMovement[]
-  deliveryItems  DeliveryNoteItem[]
-  budgetLines    BudgetLine[]
+  company            Company             @relation(fields: [companyId], references: [id])
+  branchStocks       BranchStock[]
+  stockMovements     StockMovement[]
+  deliveryItems      DeliveryNoteItem[]
+  budgetLines        BudgetLine[]
+  insurerSupplyRates InsurerSupplyRate[]
+  supplyOrderItems   SupplyOrderItem[]
 
-  @@unique([companyId, sku])
+  @@unique([companyId, name])
+  @@unique([companyId, code])
   @@map("supplies")
 }
 
+model InsurerSupplyRate {
+  id              String       @id @default(uuid())
+  healthInsurerId String
+  supplyId        String
+  agreedPrice     Decimal      @db.Decimal(12, 2)
+  validFrom       DateTime
+  validTo         DateTime?
+  active          Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+
+  healthInsurer HealthInsurer @relation(fields: [healthInsurerId], references: [id])
+  supply        Supply        @relation(fields: [supplyId], references: [id])
+
+  @@map("insurer_supply_rates")
+}
+
 model BranchStock {
-  id        String   @id @default(uuid())
-  supplyId  String
-  branchId  String
-  quantity  Int      @default(0)
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  companyId    String
+  branchId     String
+  supplyId     String
+  currentStock Decimal  @default(0) @db.Decimal(12, 2)
+  updatedAt    DateTime @updatedAt
 
-  supply Supply @relation(fields: [supplyId], references: [id])
-  branch Branch @relation(fields: [branchId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+  branch  Branch  @relation(fields: [branchId], references: [id])
+  supply  Supply  @relation(fields: [supplyId], references: [id])
 
-  @@unique([supplyId, branchId])
+  @@unique([branchId, supplyId])
   @@map("branch_stocks")
 }
 
 model StockMovement {
   id             String            @id @default(uuid())
-  supplyId       String
+  companyId      String
   branchId       String
-  performedById  String
-  movementType   StockMovementType
+  supplyId       String
+  type           StockMovementType
   quantity       Int
-  unitCost       Decimal?          @db.Decimal(12, 2)
-  deliveryNoteId String?
+  previousStock  Decimal           @db.Decimal(12, 2)
+  newStock       Decimal           @db.Decimal(12, 2)
+  reference      String?
   notes          String?
+  createdById    String
   createdAt      DateTime          @default(now())
 
-  supply       Supply        @relation(fields: [supplyId], references: [id])
+  company      Company       @relation(fields: [companyId], references: [id])
   branch       Branch        @relation(fields: [branchId], references: [id])
-  performedBy  User          @relation(fields: [performedById], references: [id])
-  deliveryNote DeliveryNote? @relation(fields: [deliveryNoteId], references: [id])
+  supply       Supply        @relation(fields: [supplyId], references: [id])
+  createdBy    User          @relation(fields: [createdById], references: [id])
+  deliveryNoteId String?
+  deliveryNote   DeliveryNote? @relation(fields: [deliveryNoteId], references: [id])
 
   @@map("stock_movements")
 }
@@ -1030,17 +1073,18 @@ model DeliveryNoteItem {
 }
 
 model Equipment {
-  id                String          @id @default(uuid())
-  companyId         String
-  branchId          String
-  name              String
-  brand             String?
-  model             String?
-  serialNumber      String?
-  baseDailyRate     Decimal         @db.Decimal(12, 2)
-  status            EquipmentStatus @default(AVAILABLE)
-  nextMaintenanceAt DateTime?
-  createdAt         DateTime        @default(now())
+  id           String          @id @default(uuid())
+  companyId    String
+  branchId     String
+  provider     String
+  name         String
+  model        String?
+  serialNumber String?         @unique
+  dailyRate    Decimal         @db.Decimal(12, 2)
+  status       EquipmentStatus @default(AVAILABLE)
+  notes        String?
+  createdAt    DateTime        @default(now())
+  deletedAt    DateTime?
 
   company     Company           @relation(fields: [companyId], references: [id])
   branch      Branch            @relation(fields: [branchId], references: [id])
@@ -1051,18 +1095,22 @@ model Equipment {
 }
 
 model EquipmentRental {
-  id                 String       @id @default(uuid())
-  equipmentId        String
-  internmentId       String
-  deliveryDate       DateTime
-  expectedReturnDate DateTime
-  actualReturnDate   DateTime?
-  dailyRate          Decimal      @db.Decimal(12, 2)
-  status             RentalStatus @default(ACTIVE)
-  createdAt          DateTime     @default(now())
+  id              String         @id @default(uuid())
+  internmentId    String
+  equipmentId     String
+  authorizationId String?
+  budgetId        String?
+  monthlyRate     Decimal        @db.Decimal(12, 2)
+  startDate       DateTime
+  endDate         DateTime?
+  closedReason    String?
+  billedToInsurer Boolean        @default(false)
+  createdAt       DateTime       @default(now())
 
-  equipment  Equipment  @relation(fields: [equipmentId], references: [id])
-  internment Internment @relation(fields: [internmentId], references: [id])
+  equipment     Equipment      @relation(fields: [equipmentId], references: [id])
+  internment    Internment     @relation(fields: [internmentId], references: [id])
+  authorization Authorization? @relation(fields: [authorizationId], references: [id])
+  budget        Budget?        @relation(fields: [budgetId], references: [id])
 
   @@map("equipment_rentals")
 }
@@ -1071,34 +1119,67 @@ model Incident {
   id           String           @id @default(uuid())
   internmentId String
   reportedById String
-  assignedToId String?
-  category     IncidentCategory
-  severity     Severity
-  description  String
-  actionTaken  String?
+  type         IncidentType
+  severity     IncidentSeverity
   status       IncidentStatus   @default(OPEN)
-  incidentDate DateTime
-  closedAt     DateTime?
+  description  String
+  resolution   String?
+  occurredAt   DateTime
+  resolvedAt   DateTime?
   createdAt    DateTime         @default(now())
 
-  internment Internment @relation(fields: [internmentId], references: [id])
-  reportedBy User       @relation(fields: [reportedById], references: [id])
-  assignedTo User?      @relation("AssignedIncidents", fields: [assignedToId], references: [id])
+  internment   Internment       @relation(fields: [internmentId], references: [id])
+  reportedBy   User             @relation(fields: [reportedById], references: [id])
 
   @@map("incidents")
 }
 
 model AlertConfig {
-  id            String    @id @default(uuid())
+  id            String           @id @default(uuid())
   companyId     String
-  branchId      String?
-  alertType     AlertType
-  daysInAdvance Int       @default(7)
-  active        Boolean   @default(true)
-  createdAt     DateTime  @default(now())
+  triggerType   AlertTriggerType
+  thresholdDays Int
+  active        Boolean          @default(true)
+  notifyRoles   Json
+  createdAt     DateTime         @default(now())
+  deletedAt     DateTime?
 
-  company Company @relation(fields: [companyId], references: [id])
-  branch  Branch? @relation(fields: [branchId], references: [id])
+  company       Company          @relation(fields: [companyId], references: [id])
 
   @@map("alert_configs")
+}
+
+model SupplyOrder {
+  id                 String            @id @default(uuid())
+  internmentId       String
+  companyId          String
+  createdById        String
+  budgetId           String?
+  status             SupplyOrderStatus @default(DRAFT)
+  notes              String?
+  cancellationReason String?
+  createdAt          DateTime          @default(now())
+
+  internment  Internment        @relation(fields: [internmentId], references: [id])
+  company     Company           @relation(fields: [companyId], references: [id])
+  createdBy   User              @relation(fields: [createdById], references: [id])
+  budget      Budget?           @relation(fields: [budgetId], references: [id])
+  items       SupplyOrderItem[]
+
+  @@map("supply_orders")
+}
+
+model SupplyOrderItem {
+  id            String   @id @default(uuid())
+  supplyOrderId String
+  supplyId      String?
+  description   String
+  quantity      Int
+  unitPrice     Decimal  @db.Decimal(12, 2)
+  createdAt     DateTime @default(now())
+
+  supplyOrder SupplyOrder @relation(fields: [supplyOrderId], references: [id], onDelete: Cascade)
+  supply      Supply?     @relation(fields: [supplyId], references: [id])
+
+  @@map("supply_order_items")
 }

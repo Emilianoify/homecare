@@ -231,6 +231,177 @@ async function main(): Promise<void> {
     }
     console.log('✓ Tarifas IOMA creadas: ENF-01, KIN-01, MED-01')
   }
+  // AlertConfigs base para la company del seed
+  const alertConfigs = [
+    {
+      triggerType:   'NO_VISIT' as const,
+      thresholdDays: 3,
+      active:        true,
+      notifyRoles:   ['COORDINATOR', 'ADMIN'],
+    },
+    {
+      triggerType:   'AUTHORIZATION_EXPIRING' as const,
+      thresholdDays: 7,
+      active:        true,
+      notifyRoles:   ['COORDINATOR', 'ADMIN'],
+    },
+    {
+      triggerType:   'NO_CLINICAL_NOTE' as const,
+      thresholdDays: 5,
+      active:        true,
+      notifyRoles:   ['COORDINATOR'],
+    },
+    {
+      triggerType:   'CRITICAL_INCIDENT_UNRESOLVED' as const,
+      thresholdDays: 1,
+      active:        true,
+      notifyRoles:   ['COORDINATOR', 'ADMIN'],
+    },
+  ]
+
+  for (const config of alertConfigs) {
+    const existing = await prisma.alertConfig.findFirst({
+      where: { companyId: company.id, triggerType: config.triggerType, deletedAt: null }
+    })
+    if (!existing) {
+      await prisma.alertConfig.create({
+        data: { ...config, companyId: company.id }
+      })
+    }
+  }
+  console.log(`✓ ${alertConfigs.length} configuraciones de alerta creadas`)
+
+  // Equipos de ejemplo — asignados a Casa Central
+  const equipos = [
+    {
+      provider:     'MedEquip Argentina S.A.',
+      name:         'Concentrador de oxígeno 5L',
+      model:        'DeVilbiss 525',
+      serialNumber: 'DEV-2024-001',
+      dailyRate:    850,
+      status:       'AVAILABLE' as const,
+    },
+    {
+      provider:     'MedEquip Argentina S.A.',
+      name:         'Concentrador de oxígeno 10L',
+      model:        'Invacare Platinum 10',
+      serialNumber: 'INV-2024-003',
+      dailyRate:    1200,
+      status:       'AVAILABLE' as const,
+    },
+    {
+      provider:     'Equimed S.R.L.',
+      name:         'Cama ortopédica eléctrica',
+      model:        'Hill-Rom P500',
+      serialNumber: 'HR-2023-047',
+      dailyRate:    1500,
+      status:       'AVAILABLE' as const,
+    },
+    {
+      provider:     'Equimed S.R.L.',
+      name:         'Aspirador de secreciones',
+      model:        'Medela Dominant 50',
+      serialNumber: 'MED-2024-012',
+      dailyRate:    600,
+      status:       'AVAILABLE' as const,
+    },
+  ]
+
+  for (const equipo of equipos) {
+    await prisma.equipment.upsert({
+      where:  { serialNumber: equipo.serialNumber },
+      update: {},
+      create: { ...equipo, companyId: company.id, branchId: branch.id, notes: null },
+    })
+  }
+  console.log(`✓ ${equipos.length} equipos de ejemplo creados`)
+
+  // Catálogo base de insumos de la company — extraídos del presupuesto real de Sanity Care
+  const supplies = [
+    { code: null,  name: 'Agua destilada 10ml',                       unit: 'unidad', purchasePrice: 500 },
+    { code: null,  name: 'Alargue para oxígeno 6mts',                 unit: 'unidad', purchasePrice: 6000 },
+    { code: null,  name: 'Alcohol al 70% 1lt',                        unit: 'litro',  purchasePrice: 2800 },
+    { code: '9',   name: 'Alcohol en gel 250cc',                      unit: 'unidad', purchasePrice: 1700 },
+    { code: null,  name: 'Apósito estéril',                           unit: 'unidad', purchasePrice: 380 },
+    { code: '20',  name: 'Barbijo recto',                             unit: 'unidad', purchasePrice: 45 },
+    { code: null,  name: 'Cánula aurinco Nº6 c/b y a/subglótica',    unit: 'unidad', purchasePrice: 80000 },
+    { code: '185', name: 'Cinta hipoalergénica 2,5cm',                unit: 'unidad', purchasePrice: 450 },
+    { code: null,  name: 'Clorhexidina 1lt al 4%',                   unit: 'litro',  purchasePrice: 18000 },
+    { code: '52',  name: 'Detergente enzimático 1lt',                 unit: 'litro',  purchasePrice: 20000 },
+    { code: null,  name: 'Filtro TQT Tracheolife II Covidien',        unit: 'unidad', purchasePrice: 4500 },
+    { code: '61',  name: 'Frasco alimentación 500cc',                 unit: 'unidad', purchasePrice: 1900 },
+    { code: '65',  name: 'Gasa 10x10cm no tejida',                   unit: 'unidad', purchasePrice: 240 },
+    { code: null,  name: 'Gasa fenestrada 5x5cm',                    unit: 'unidad', purchasePrice: 850 },
+    { code: '76',  name: 'Guantes de examinación',                    unit: 'unidad', purchasePrice: 50 },
+    { code: null,  name: 'Guantes estériles x par',                   unit: 'par',    purchasePrice: 430 },
+    { code: null,  name: 'Guía de alimentación',                      unit: 'unidad', purchasePrice: 8500 },
+    { code: '88',  name: 'Jeringa 10ml',                              unit: 'unidad', purchasePrice: 110 },
+    { code: '90',  name: 'Jeringa 20ml',                              unit: 'unidad', purchasePrice: 190 },
+    { code: null,  name: 'Jeringa 60ml pico fino',                    unit: 'unidad', purchasePrice: 430 },
+    { code: '95',  name: 'Jeringa 60ml pico Toomey',                  unit: 'unidad', purchasePrice: 450 },
+    { code: null,  name: 'Sensor oxímetro neo/adulto descartable',    unit: 'unidad', purchasePrice: 18000 },
+    { code: '205', name: 'Solución fisiológica 10ml',                 unit: 'unidad', purchasePrice: 680 },
+    { code: '165', name: 'Sonda aspiración K30P Koler',               unit: 'unidad', purchasePrice: 1100 },
+    { code: '193', name: 'Tubuladura T63 x metro',                    unit: 'metro',  purchasePrice: 3600 },
+    { code: '201', name: 'Zalea',                                     unit: 'unidad', purchasePrice: 600 },
+  ]
+
+  for (const supply of supplies) {
+    await prisma.supply.upsert({
+      where: {
+        companyId_name: {
+          companyId: company.id,
+          name:      supply.name,
+        },
+      },
+      update: {},
+      create: { ...supply, companyId: company.id, active: true },
+    })
+  }
+  console.log(`✓ ${supplies.length} insumos creados para la company`)
+
+  // Stock inicial para Casa Central — insumos más comunes
+  const stockBranch = await prisma.branch.findFirst({
+    where: { companyId: company.id, deletedAt: null },
+  })
+
+  const gasas = await prisma.supply.findFirst({
+    where: { companyId: company.id, name: { contains: 'Gasa 10x10' } },
+  })
+
+  const guantes = await prisma.supply.findFirst({
+    where: { companyId: company.id, name: { contains: 'Guantes de examinación' } },
+  })
+
+  const jeringas = await prisma.supply.findFirst({
+    where: { companyId: company.id, name: { contains: 'Jeringa 10ml' } },
+  })
+
+  if (stockBranch && gasas) {
+    await prisma.branchStock.upsert({
+      where:  { branchId_supplyId: { branchId: stockBranch.id, supplyId: gasas.id } },
+      update: {},
+      create: { companyId: company.id, branchId: stockBranch.id, supplyId: gasas.id, currentStock: 500 },
+    })
+  }
+
+  if (stockBranch && guantes) {
+    await prisma.branchStock.upsert({
+      where:  { branchId_supplyId: { branchId: stockBranch.id, supplyId: guantes.id } },
+      update: {},
+      create: { companyId: company.id, branchId: stockBranch.id, supplyId: guantes.id, currentStock: 200 },
+    })
+  }
+
+  if (stockBranch && jeringas) {
+    await prisma.branchStock.upsert({
+      where:  { branchId_supplyId: { branchId: stockBranch.id, supplyId: jeringas.id } },
+      update: {},
+      create: { companyId: company.id, branchId: stockBranch.id, supplyId: jeringas.id, currentStock: 150 },
+    })
+  }
+
+  console.log('✓ Stock inicial creado para Casa Central')
 
   console.log(`✅ Seed completo — ${adminEmail} / ${adminPassword}`)
 }

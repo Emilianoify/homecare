@@ -13,6 +13,7 @@ export const MODULES = {
   BRANCHES:        'branches',
   REPORTS:         'reports',
   USERS:           'users',
+  EQUIPMENT:       'equipment',
 } as const
 
 export const ACTIONS = {
